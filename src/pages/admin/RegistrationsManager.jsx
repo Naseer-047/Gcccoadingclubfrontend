@@ -4,9 +4,10 @@ import {
   Users, ChevronLeft, Search, 
   Mail, Phone, User, GraduationCap,
   Download, Printer, Trash2, CheckCircle, XCircle, Eye, ExternalLink, Image as ImageIcon,
-  Clock, ShieldCheck
+  Clock, ShieldCheck, QrCode
 } from 'lucide-react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export default function RegistrationsManager() {
   const { id } = useParams();
@@ -18,6 +19,26 @@ export default function RegistrationsManager() {
   const [selectedReg, setSelectedReg] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [verifying, setVerifying] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+
+  const handleDownloadQR = async (url, title) => {
+    try {
+      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(url)}`;
+      const response = await fetch(qrApiUrl);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = `${title.toLowerCase().replace(/[^a-z0-9]/g, '_')}_qr_code.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error('Failed to download QR code', err);
+      window.open(`https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(url)}`, '_blank');
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -102,10 +123,17 @@ export default function RegistrationsManager() {
           </div>
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+           <button 
+             onClick={() => setShowShareModal(true)}
+             className="flex items-center justify-center gap-3 px-6 py-3 rounded-2xl bg-black/5 dark:bg-white/5 text-slate-500 text-[10px] font-black uppercase tracking-widest border border-black/5 dark:border-white/10 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all shadow-sm cursor-pointer"
+             title="Share Event Registration QR Code"
+           >
+             <QrCode className="w-4 h-4" /> Share QR
+           </button>
            <button 
             onClick={handleExport}
-            className="flex items-center justify-center gap-3 px-6 py-3 rounded-2xl bg-black/5 dark:bg-white/5 text-slate-500 text-[10px] font-black uppercase tracking-widest border border-black/5 dark:border-white/10 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all shadow-sm"
+            className="flex items-center justify-center gap-3 px-6 py-3 rounded-2xl bg-black/5 dark:bg-white/5 text-slate-500 text-[10px] font-black uppercase tracking-widest border border-black/5 dark:border-white/10 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all shadow-sm cursor-pointer"
           >
             <Download className="w-4 h-4" /> Export CSV
           </button>
@@ -323,6 +351,67 @@ export default function RegistrationsManager() {
                 Confirm & Verify
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Share Event Registration QR Modal */}
+      {showShareModal && event && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 md:p-6 backdrop-blur-md bg-black/60">
+          <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl border border-black/5 dark:border-white/10 overflow-hidden animate-in zoom-in duration-300 flex flex-col relative p-8 gap-6 text-center">
+            
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-16 h-16 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-500 flex items-center justify-center">
+                <QrCode className="w-8 h-8" />
+              </div>
+              <h2 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Share Event QR</h2>
+              <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest leading-none">{event.title}</p>
+            </div>
+
+            {/* QR Code Container */}
+            <div className="p-6 rounded-[2rem] bg-slate-50 dark:bg-white/5 border border-black/5 dark:border-white/5 flex flex-col items-center justify-center gap-4">
+              <div className="w-48 h-48 bg-white p-3 rounded-2xl shadow-inner border border-black/5 flex items-center justify-center">
+                <img 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`${window.location.origin}/#/events/${event._id}`)}`} 
+                  alt="Registration QR Code" 
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Scan to Register</span>
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-3">
+                <button 
+                  onClick={async () => {
+                    const regUrl = `${window.location.origin}/#/events/${event._id}`;
+                    try {
+                      await navigator.clipboard.writeText(regUrl);
+                      toast.success('Registration link copied! 📋');
+                    } catch (err) {
+                      toast.error('Failed to copy link');
+                    }
+                  }}
+                  className="flex-1 px-5 py-4 rounded-2xl bg-black/5 dark:bg-white/5 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 border border-black/5 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  Copy Link
+                </button>
+                <button 
+                  onClick={() => handleDownloadQR(`${window.location.origin}/#/events/${event._id}`, event.title)}
+                  className="flex-1 px-5 py-4 rounded-2xl bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest shadow-xl shadow-emerald-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  Download QR
+                </button>
+              </div>
+              <button 
+                onClick={() => setShowShareModal(false)}
+                className="w-full px-8 py-4 rounded-2xl border border-black/5 dark:border-white/10 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+
           </div>
         </div>
       )}
