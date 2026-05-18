@@ -70,9 +70,25 @@ export default function DiscussionDetail() {
     }
   };
 
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast.success('Link copied to clipboard!');
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Discussion: ${discussion.title}`,
+          text: `Join the discussion on GAT Coding Club: "${discussion.title}"`,
+          url: window.location.href
+        });
+        return;
+      } catch (err) {
+        if (err.name !== 'AbortError') console.error('Share failed:', err);
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success('Link copied to clipboard! 📋');
+    } catch (err) {
+      toast.error('Failed to copy link');
+    }
   };
 
   if (loading) return <div className="min-h-screen pt-40 text-center animate-pulse">Loading Discussion...</div>;

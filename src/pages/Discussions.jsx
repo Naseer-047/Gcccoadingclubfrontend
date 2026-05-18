@@ -10,6 +10,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Magnetic from '../components/Magnetic';
+import toast from 'react-hot-toast';
 
 export default function Discussions() {
   const { user } = useAuth();
@@ -18,6 +19,28 @@ export default function Discussions() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+  const handleShare = async (id, title) => {
+    const shareUrl = `${window.location.origin}/discussions/${id}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Discussion: ${title}`,
+          text: `Join the discussion on GAT Coding Club: "${title}"`,
+          url: shareUrl
+        });
+        return;
+      } catch (err) {
+        if (err.name !== 'AbortError') console.error('Share failed:', err);
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success('Link copied to clipboard! 📋');
+    } catch (err) {
+      toast.error('Failed to copy link');
+    }
+  };
 
   const categories = ['All', 'General', 'Technical', 'AI / ML', 'Web Dev', 'Cyber Security', 'Career', 'Projects'];
 
@@ -203,10 +226,17 @@ export default function Discussions() {
                                  <MessageSquare className="w-4 h-4" />
                                  <span className="text-[10px] font-black uppercase tracking-widest">{thread.comments?.length || 0} Comments</span>
                               </div>
-                              <div className="flex items-center gap-2 text-slate-400">
+                              <button 
+                                onClick={(e) => { 
+                                  e.preventDefault(); 
+                                  e.stopPropagation(); 
+                                  handleShare(thread._id, thread.title); 
+                                }}
+                                className="flex items-center gap-2 text-slate-400 hover:text-emerald-500 transition-colors"
+                              >
                                  <Share2 className="w-4 h-4" />
                                  <span className="text-[10px] font-black uppercase tracking-widest">Share</span>
-                              </div>
+                              </button>
                            </div>
                         </div>
                      </div>

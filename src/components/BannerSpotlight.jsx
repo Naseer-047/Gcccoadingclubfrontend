@@ -213,7 +213,11 @@ export default function BannerSpotlight({ banners }) {
 
               {/* Close Button */}
               <button 
-                onClick={(e) => { e.stopPropagation(); setIsVisible(false); }}
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  setIsVisible(false); 
+                  sessionStorage.setItem('gcc_banner_closed', 'true');
+                }}
                 className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 flex items-center justify-center text-white border border-white/20 z-[10002]"
               >
                 <X className="w-4 h-4" />

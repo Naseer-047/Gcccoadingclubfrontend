@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 export default function EventDetails() {
   const { id } = useParams();
@@ -17,6 +18,28 @@ export default function EventDetails() {
   const [isRegistered, setIsRegistered] = useState(false);
   const [error, setError] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [isExpired, setIsExpired] = useState(false);
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Event: ${event?.title}`,
+          text: `Check out this upcoming event on GAT Coding Club: "${event?.title}"!`,
+          url: window.location.href
+        });
+        return;
+      } catch (err) {
+        if (err.name !== 'AbortError') console.error('Share failed:', err);
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success('Link copied to clipboard! 📋');
+    } catch (err) {
+      toast.error('Failed to copy link');
+    }
+  };
   
   useEffect(() => {
     const fetchEvent = async () => {
@@ -59,6 +82,10 @@ export default function EventDetails() {
           minutes: Math.floor((difference / 1000 / 60) % 60),
           seconds: Math.floor((difference / 1000) % 60)
         });
+        setIsExpired(false);
+      } else {
+        setIsExpired(true);
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       }
     };
 
@@ -114,7 +141,7 @@ export default function EventDetails() {
 
             <div className="grid lg:grid-cols-12 gap-12 items-center">
               <div className="lg:col-span-7 flex flex-col gap-6">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 w-full">
                    <span className="px-4 py-1.5 rounded-lg bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest">
                      {event.category}
                    </span>
@@ -122,6 +149,13 @@ export default function EventDetails() {
                       <Zap className="w-4 h-4 animate-pulse" />
                       <span className="text-[10px] font-black uppercase tracking-widest">Live Now</span>
                    </div>
+                   <button 
+                     onClick={handleShare}
+                     className="ml-auto flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-white/10 hover:bg-emerald-500 border border-white/10 hover:border-emerald-500 text-white transition-all text-[10px] font-black uppercase tracking-widest cursor-pointer shadow-md"
+                     title="Share Event"
+                   >
+                     <Share2 className="w-3.5 h-3.5" /> Share
+                   </button>
                 </div>
                 
                 <h1 className="text-4xl md:text-7xl font-black tracking-tighter text-white uppercase leading-[0.9]">
@@ -142,31 +176,50 @@ export default function EventDetails() {
               {/* Countdown Card */}
               <div className="lg:col-span-5">
                 <div className="bg-white/10 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-8 md:p-10 flex flex-col gap-8 shadow-2xl">
-                   <div className="flex flex-col gap-2 text-center">
-                      <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-400">Event Starts In</h4>
-                      <div className="grid grid-cols-4 gap-4">
-                        {[
-                          { label: 'Days', val: timeLeft.days },
-                          { label: 'Hrs', val: timeLeft.hours },
-                          { label: 'Min', val: timeLeft.minutes },
-                          { label: 'Sec', val: timeLeft.seconds }
-                        ].map((t, idx) => (
-                          <div key={idx} className="flex flex-col items-center">
-                            <span className="text-3xl md:text-4xl font-black text-white">{String(t.val).padStart(2, '0')}</span>
-                            <span className="text-[8px] font-black uppercase tracking-widest text-white/40">{t.label}</span>
-                          </div>
-                        ))}
-                      </div>
-                   </div>
+                   {isExpired ? (
+                     <div className="flex flex-col gap-2 text-center py-4">
+                        <div className="mx-auto w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 mb-2">
+                          <AlertTriangle className="w-6 h-6 animate-pulse" />
+                        </div>
+                        <h4 className="text-sm font-black uppercase tracking-widest text-red-500">Registration Closed</h4>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">This event has already happened or is in progress.</p>
+                     </div>
+                   ) : (
+                     <div className="flex flex-col gap-2 text-center">
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-400">Event Starts In</h4>
+                        <div className="grid grid-cols-4 gap-4">
+                          {[
+                            { label: 'Days', val: timeLeft.days },
+                            { label: 'Hrs', val: timeLeft.hours },
+                            { label: 'Min', val: timeLeft.minutes },
+                            { label: 'Sec', val: timeLeft.seconds }
+                          ].map((t, idx) => (
+                            <div key={idx} className="flex flex-col items-center">
+                              <span className="text-3xl md:text-4xl font-black text-white">{String(t.val).padStart(2, '0')}</span>
+                              <span className="text-[8px] font-black uppercase tracking-widest text-white/40">{t.label}</span>
+                            </div>
+                          ))}
+                        </div>
+                     </div>
+                   )}
 
                    <div className="h-px bg-white/10" />
 
-                   <Link 
-                     to={`/register/event/${id}`}
-                     className={`w-full py-5 rounded-2xl text-xs font-black tracking-[0.2em] flex items-center justify-center gap-3 transition-all active:scale-95 uppercase shadow-xl ${isRegistered ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 'bg-white text-slate-900 hover:bg-emerald-500 hover:text-white'}`}
-                   >
-                     {isRegistered ? <><Edit2 className="w-4 h-4" /> EDIT REGISTRATION</> : 'REGISTER FOR EVENT'}
-                   </Link>
+                   {isExpired ? (
+                     <button 
+                       disabled
+                       className="w-full py-5 rounded-2xl text-xs font-black tracking-[0.2em] flex items-center justify-center gap-3 bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 uppercase cursor-not-allowed"
+                     >
+                       REGISTRATION CLOSED
+                     </button>
+                   ) : (
+                     <Link 
+                       to={`/register/event/${id}`}
+                       className={`w-full py-5 rounded-2xl text-xs font-black tracking-[0.2em] flex items-center justify-center gap-3 transition-all active:scale-95 uppercase shadow-xl ${isRegistered ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 'bg-white text-slate-900 hover:bg-emerald-500 hover:text-white'}`}
+                     >
+                       {isRegistered ? <><Edit2 className="w-4 h-4" /> EDIT REGISTRATION</> : 'REGISTER FOR EVENT'}
+                     </Link>
+                   )}
                 </div>
               </div>
             </div>
@@ -228,21 +281,32 @@ export default function EventDetails() {
           </div>
 
           <div className="lg:col-span-1 flex flex-col gap-10">
-             <div className="p-8 rounded-[2rem] border-2 border-dashed border-slate-200 dark:border-white/10">
-                <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6 flex items-center gap-2">
-                  <Clock className="w-4 h-4" /> Registration Due In
-                </h4>
-                <div className="flex items-center gap-4 text-emerald-500">
-                  <div className="flex flex-col">
-                    <span className="text-3xl font-black leading-none">{timeLeft.days}d</span>
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Left</span>
-                  </div>
-                  <div className="w-px h-10 bg-slate-200 dark:bg-white/10" />
-                  <p className="text-[11px] font-medium leading-tight text-slate-500 max-w-[120px]">
-                    Register before the portal closes to ensure entry.
+             {isExpired ? (
+               <div className="p-8 rounded-[2rem] border-2 border-dashed border-red-500/20 bg-red-500/5">
+                  <h4 className="text-xs font-black uppercase tracking-widest text-red-500 mb-4 flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 animate-pulse" /> Status
+                  </h4>
+                  <p className="text-xs font-bold leading-relaxed text-slate-500 uppercase tracking-wide">
+                    The registration portal for this event is closed. Keep an eye out for upcoming challenges!
                   </p>
-                </div>
-             </div>
+               </div>
+             ) : (
+               <div className="p-8 rounded-[2rem] border-2 border-dashed border-slate-200 dark:border-white/10">
+                  <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6 flex items-center gap-2">
+                    <Clock className="w-4 h-4" /> Registration Due In
+                  </h4>
+                  <div className="flex items-center gap-4 text-emerald-500">
+                    <div className="flex flex-col">
+                      <span className="text-3xl font-black leading-none">{timeLeft.days}d</span>
+                      <span className="text-[10px] font-bold uppercase tracking-widest">Left</span>
+                    </div>
+                    <div className="w-px h-10 bg-slate-200 dark:bg-white/10" />
+                    <p className="text-[11px] font-medium leading-tight text-slate-500 max-w-[120px]">
+                      Register before the portal closes to ensure entry.
+                    </p>
+                  </div>
+               </div>
+             )}
           </div>
         </div>
       </div>

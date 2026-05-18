@@ -3,7 +3,7 @@ import axios from 'axios';
 import { 
   Search, Filter, BookOpen, Video, FileText, 
   Link as LinkIcon, Code as CodeIcon, GraduationCap,
-  ArrowRight, Sparkles, ExternalLink, Hash, Clock, Plus, X, User as UserIcon
+  ArrowRight, Sparkles, ExternalLink, Hash, Clock, Plus, X, User as UserIcon, Share2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -321,14 +321,43 @@ export default function Resources() {
                           <span className="text-[7px] md:text-[8px] font-bold text-slate-500 uppercase tracking-tighter mt-0.5">Contributor</span>
                         </div>
                       </div>
-                      <a 
-                        href={res.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 md:gap-2 text-[9px] md:text-[10px] font-black text-brand uppercase tracking-widest group-hover:translate-x-1 transition-transform"
-                      >
-                        Explore <ExternalLink className="w-3 md:w-3.5 h-3 md:h-3.5" />
-                      </a>
+                      <div className="flex items-center gap-3">
+                        <button 
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            if (navigator.share) {
+                              try {
+                                await navigator.share({
+                                  title: `Resource: ${res.title}`,
+                                  text: `Check out this useful resource on GAT Coding Club: "${res.title}"`,
+                                  url: res.url
+                                });
+                                return;
+                              } catch (err) {
+                                if (err.name !== 'AbortError') console.error(err);
+                              }
+                            }
+                            try {
+                              await navigator.clipboard.writeText(res.url);
+                              toast.success('Resource link copied! 📋');
+                            } catch (err) {
+                              toast.error('Failed to copy link');
+                            }
+                          }}
+                          className="p-2 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-emerald-500/10 hover:text-emerald-500 text-slate-400 dark:text-slate-500 transition-all cursor-pointer flex items-center justify-center"
+                          title="Share Resource"
+                        >
+                          <Share2 className="w-3.5 h-3.5" />
+                        </button>
+                        <a 
+                          href={res.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 md:gap-2 text-[9px] md:text-[10px] font-black text-brand uppercase tracking-widest group-hover:translate-x-1 transition-transform"
+                        >
+                          Explore <ExternalLink className="w-3 md:w-3.5 h-3 md:h-3.5" />
+                        </a>
+                      </div>
                     </div>
                   </div>
                 ))}

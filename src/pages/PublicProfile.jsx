@@ -11,6 +11,7 @@ import { Github, Linkedin, Instagram } from '../components/Icons';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import Magnetic from '../components/Magnetic';
+import toast from 'react-hot-toast';
 
 export default function PublicProfile() {
   const { id } = useParams();
@@ -19,6 +20,27 @@ export default function PublicProfile() {
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Profile: ${profile?.name}`,
+          text: `Check out ${profile?.name}'s profile on GAT Coding Club!`,
+          url: window.location.href
+        });
+        return;
+      } catch (err) {
+        if (err.name !== 'AbortError') console.error('Share failed:', err);
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success('Profile link copied to clipboard! 📋');
+    } catch (err) {
+      toast.error('Failed to copy link');
+    }
+  };
 
   useEffect(() => {
     fetchProfile();
@@ -132,7 +154,11 @@ export default function PublicProfile() {
                           </button>
                        </Magnetic>
                        <Magnetic strength={0.2}>
-                          <button className="p-4 rounded-2xl bg-white dark:bg-white/5 border border-black/5 dark:border-white/10 text-slate-900 dark:text-white shadow-xl">
+                          <button 
+                            onClick={handleShare}
+                            className="p-4 rounded-2xl bg-white dark:bg-white/5 border border-black/5 dark:border-white/10 text-slate-900 dark:text-white shadow-xl hover:text-emerald-500 hover:border-emerald-500/30 transition-all cursor-pointer"
+                            title="Share Profile"
+                          >
                              <Share2 className="w-4 h-4" />
                           </button>
                        </Magnetic>

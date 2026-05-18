@@ -426,6 +426,27 @@ export default function LiveRoomDetail() {
     setNewMessage('');
   };
 
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Live Room: ${room?.title}`,
+          text: `Join the live MERN session on GAT Coding Club: "${room?.title}"!`,
+          url: window.location.href
+        });
+        return;
+      } catch (err) {
+        if (err.name !== 'AbortError') console.error('Share failed:', err);
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success('Live room link copied to clipboard! 📋');
+    } catch (err) {
+      toast.error('Failed to copy link');
+    }
+  };
+
   const toggleHand = () => {
     const newState = !isHandRaised;
     setIsHandRaised(newState);
@@ -556,7 +577,11 @@ export default function LiveRoomDetail() {
          </div>
 
            <div className="flex items-center gap-2 md:gap-4">
-            <button className={`p-2 md:p-2.5 rounded-lg md:rounded-xl transition-all hidden sm:block ${isDarkTheme ? 'hover:bg-white/5 text-slate-400' : 'hover:bg-slate-100 text-slate-500'}`}>
+            <button 
+              onClick={handleShare}
+              className={`p-2 md:p-2.5 rounded-lg md:rounded-xl transition-all hidden sm:block cursor-pointer ${isDarkTheme ? 'hover:bg-white/5 text-slate-400 hover:text-emerald-500' : 'hover:bg-slate-100 text-slate-500 hover:text-emerald-500'}`}
+              title="Share Session Link"
+            >
                <Share2 className="w-3.5 h-3.5 md:w-4 md:h-4" />
             </button>
             <button 

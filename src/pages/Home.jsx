@@ -286,8 +286,12 @@ export default function Home({ theme }) {
   ]);
   const [activeTab, setActiveTab] = useState('events');
   const [banners, setBanners] = useState([]);
+  const activeBanners = banners.filter(b => {
+    if (!b.targetDate) return true;
+    return new Date(b.targetDate).getTime() > Date.now();
+  });
   const [showBanner, setShowBanner] = useState(() => {
-    return !sessionStorage.getItem('gcc_banner_shown');
+    return !sessionStorage.getItem('gcc_banner_closed');
   });
 
   const [loadingBanners, setLoadingBanners] = useState(true);
@@ -301,12 +305,6 @@ export default function Home({ theme }) {
   const [leaderboardLoading, setLeaderboardLoading] = useState(true);
   const [isTourRunning, setIsTourRunning] = useState(false);
   const termRef = useRef(null);
-
-  useEffect(() => {
-    if (showBanner && banners.length > 0) {
-      sessionStorage.setItem('gcc_banner_shown', 'true');
-    }
-  }, [showBanner, banners]);
 
   useEffect(() => {
     fetchEvents();
@@ -595,16 +593,16 @@ export default function Home({ theme }) {
         )}
       </AnimatePresence>
 
-      {showBanner && banners.length > 0 && (
+      {showBanner && activeBanners.length > 0 && (
         <div className={`absolute top-[8rem] left-0 right-0 z-[1001] pointer-events-none transition-opacity duration-500 ${isTourRunning ? 'opacity-0' : 'opacity-100'}`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 pointer-events-auto">
-            <BannerSpotlight banners={banners} />
+            <BannerSpotlight banners={activeBanners} />
           </div>
         </div>
       )}
 
       {/* DESKTOP HERO */}
-      <section id="hero" className={`hidden md:flex relative min-h-[100vh] flex-col items-center justify-center pb-6 px-6 overflow-hidden bg-white dark:bg-slate-950 ${(showBanner && banners.length > 0) ? 'pt-24 md:pt-32' : 'pt-32 md:pt-40'}`}>
+      <section id="hero" className={`hidden md:flex relative min-h-[100vh] flex-col items-center justify-center pb-6 px-6 overflow-hidden bg-white dark:bg-slate-950 ${(showBanner && activeBanners.length > 0) ? 'pt-24 md:pt-32' : 'pt-32 md:pt-40'}`}>
         {/* Shutter Doors */}
         <div id="hero-door-l" className="hero-door hero-door-left"></div>
         <div id="hero-door-r" className="hero-door hero-door-right"></div>
@@ -656,7 +654,7 @@ export default function Home({ theme }) {
       </section>
 
       {/* MOBILE HERO (The Magnet) */}
-      <MobileHero banners={banners} />
+      <MobileHero banners={activeBanners} />
       {/* Stats Overlay for Desktop */}
       <div className="hidden lg:block pointer-events-none relative">
         <div className="absolute right-[4vw] bottom-[10dvh] flex flex-col gap-8 items-end text-right z-30">
