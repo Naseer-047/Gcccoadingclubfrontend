@@ -31,15 +31,16 @@ const upload = multer({ storage: storage });
 // @desc    Upload image or document
 // @route   POST /api/upload
 // @access  Private
-router.post('/', protect, upload.single('file'), (req, res) => {
+router.post('/', protect, upload.any(), (req, res) => {
   try {
-    if (!req.file) {
+    const file = req.files && req.files[0];
+    if (!file) {
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
     res.json({
       success: true,
-      url: req.file.path,
-      public_id: req.file.filename
+      url: file.path,
+      public_id: file.filename
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

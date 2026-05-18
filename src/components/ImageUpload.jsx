@@ -18,7 +18,7 @@ export default function ImageUpload({ value, onChange, label = 'Upload Image', c
     }
 
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('file', file);
 
     setUploading(true);
     try {

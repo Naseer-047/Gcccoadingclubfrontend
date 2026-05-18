@@ -2,7 +2,7 @@ import { io } from 'socket.io-client';
 
 const SOCKET_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD 
   ? 'https://gcc-backend-api.onrender.com' 
-  : 'http://localhost:5001');
+  : `${window.location.protocol}//${window.location.hostname}:5001`);
 
 const socket = io(SOCKET_URL, {
   withCredentials: true,

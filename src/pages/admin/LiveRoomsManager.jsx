@@ -8,7 +8,7 @@ import {
 import { toast } from 'react-hot-toast';
 import socket from '../../utils/socket';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 export default function LiveRoomsManager() {
   const [rooms, setRooms] = useState([]);

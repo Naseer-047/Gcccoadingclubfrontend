@@ -108,7 +108,7 @@ export default function EventRegistration() {
     if (!file) return;
 
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('file', file);
 
     setIsUploading(true);
     const uploadToast = toast.loading('Uploading payment proof...');
