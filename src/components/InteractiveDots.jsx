@@ -72,28 +72,73 @@ export default function InteractiveDots() {
       }
     };
 
+    let isAnimating = false;
+
+    const startAnimating = () => {
+      if (!isAnimating) {
+        isAnimating = true;
+        animate();
+      }
+    };
+
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let particlesMoving = false;
+
       for (let i = 0; i < particles.length; i++) {
-        particles[i].draw();
-        particles[i].update();
+        const p = particles[i];
+        p.update();
+        p.draw();
+
+        // Check if particle is still returning/moving to base
+        const dx = Math.abs(p.x - p.baseX);
+        const dy = Math.abs(p.y - p.baseY);
+        if (dx > 0.1 || dy > 0.1) {
+          particlesMoving = true;
+        }
       }
-      animationFrameId = requestAnimationFrame(animate);
+
+      const mouseActive = mouse.x !== null;
+
+      if (particlesMoving || mouseActive) {
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        isAnimating = false;
+        // Snap to exact bases
+        for (let i = 0; i < particles.length; i++) {
+          particles[i].x = particles[i].baseX;
+          particles[i].y = particles[i].baseY;
+        }
+      }
     };
 
+    let mouseFrame;
     const handleMouseMove = (e) => {
-      mouse.x = e.x;
-      mouse.y = e.y;
+      if (mouseFrame) cancelAnimationFrame(mouseFrame);
+      mouseFrame = requestAnimationFrame(() => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        startAnimating();
+      });
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    const handleMouseLeave = () => {
+      mouse.x = null;
+      mouse.y = null;
+      startAnimating();
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    document.addEventListener('mouseleave', handleMouseLeave);
     window.addEventListener('resize', resize);
     resize();
-    animate();
+    startAnimating();
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
       window.removeEventListener('resize', resize);
+      if (mouseFrame) cancelAnimationFrame(mouseFrame);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);

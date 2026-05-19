@@ -8,10 +8,12 @@ import {
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 export default function Resources() {
+  useScrollReveal();
   const { user } = useAuth();
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -283,7 +285,7 @@ export default function Resources() {
                 <span className="text-[10px] md:text-[11px] font-black uppercase tracking-widest opacity-60">No resources found</span>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 stagger-children">
                 {filteredResources.map((res) => (
                   <div 
                     key={res._id}

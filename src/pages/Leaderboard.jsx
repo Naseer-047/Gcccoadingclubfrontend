@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Medal, Crown, Zap, TrendingUp, Users, Search, Filter, ArrowUp, Award, Terminal } from 'lucide-react';
+import { Trophy, Medal, Crown, Zap, TrendingUp, Users, Search, Filter, ArrowUp, Award, Terminal, MessageSquare } from 'lucide-react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Magnetic from '../components/Magnetic';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 export default function Leaderboard() {
+  useScrollReveal();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('xp'); // xp, streak, contributions
@@ -38,7 +40,7 @@ export default function Leaderboard() {
     <div className="min-h-screen bg-white dark:bg-slate-950 pt-32 pb-20 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         {/* HEADER SECTION */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 animate-on-scroll">
            <div className="max-w-2xl">
               <div className="flex items-center gap-3 mb-4">
                  <div className="px-4 py-1.5 bg-emerald-500/10 rounded-full border border-emerald-500/20 text-[10px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-2">
@@ -54,7 +56,7 @@ export default function Leaderboard() {
            </div>
 
            {/* Quick Stats Cards */}
-           <div className="flex gap-4">
+           <div className="flex gap-4 animate-on-scroll">
               <div className="p-6 bg-slate-50 dark:bg-white/5 rounded-[2rem] border border-black/5 dark:border-white/5 flex flex-col gap-2 min-w-[150px]">
                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Members</span>
                  <span className="text-2xl font-black text-slate-900 dark:text-white">1.2K+</span>

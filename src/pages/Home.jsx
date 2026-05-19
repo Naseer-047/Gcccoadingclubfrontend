@@ -24,6 +24,8 @@ import HeroTerminal from '../components/HeroTerminal';
 import BannerSpotlight from '../components/BannerSpotlight';
 import Magnetic from '../components/Magnetic';
 import socket from '../utils/socket';
+import ThreeGridTunnel from '../components/ThreeGridTunnel';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 
 const CodeNebula = () => {
@@ -134,16 +136,17 @@ const SplitText = ({ text, className }) => {
 };
 
 const MobileHero = ({ banners }) => {
+  const navigate = useNavigate();
+
   return (
-    <section className="md:hidden relative h-[100dvh] flex flex-col items-center justify-center px-6 overflow-hidden bg-white dark:bg-slate-950">
-      <StaticCodeNebula />
+    <section className="md:hidden relative h-[100dvh] flex flex-col items-center justify-center px-6 overflow-hidden bg-transparent">
       
-      <div className="relative z-10 flex flex-col items-center text-center gap-12">
-        <div className="flex flex-col gap-4">
+      <div className="relative z-10 flex flex-col items-center text-center gap-8 max-w-sm">
+        <div className="flex flex-col gap-4 items-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-max mx-auto px-4 py-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/5 text-emerald-500 text-[10px] font-black uppercase tracking-[0.2em]"
+            className="w-max px-4 py-1.5 rounded-full border border-emerald-500/20 bg-emerald-50/50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em]"
           >
             GAT Coding Club
           </motion.div>
@@ -153,31 +156,50 @@ const MobileHero = ({ banners }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.1]"
+            className="text-[3.2rem] font-bold tracking-tighter leading-[0.85] text-slate-950 dark:text-white"
           >
-            CODE. <br />
-            BUILD. <br />
-            <span className="text-emerald-500 underline decoration-4 underline-offset-8">INNOVATE.</span>
+            Learn <span className="text-emerald-500 dark:text-emerald-400">coding.</span>
           </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-sm font-normal max-w-[280px] leading-relaxed text-slate-500 dark:text-slate-400 mt-2"
+          >
+            Build the projects of your dreams to scale your skills and career, <span className="text-emerald-500 dark:text-emerald-400 font-semibold">infinitely</span>
+          </motion.p>
         </div>
 
-        <motion.button
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => {
-            const el = document.getElementById('about');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }}
-          className="px-12 py-5 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-black uppercase tracking-widest shadow-2xl"
-        >
-          Explore Now
-        </motion.button>
+        <div className="flex items-center gap-6 mt-2">
+          <motion.button
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/domains')}
+            className="rounded-full px-6 py-3 text-xs font-medium bg-emerald-500 text-white hover:bg-emerald-600 transition-all duration-300 shadow-lg shadow-emerald-500/15"
+          >
+            Explore Domains
+          </motion.button>
+          
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            onClick={() => {
+              const el = document.getElementById('about');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="text-xs font-medium hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors flex items-center gap-1 text-emerald-600 dark:text-emerald-400"
+          >
+            Our Mission <span>→</span>
+          </motion.button>
+        </div>
       </div>
 
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-20">
-        <ArrowRight className="w-6 h-6 rotate-90 text-slate-900 dark:text-white" />
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-40">
+        <ArrowRight className="w-6 h-6 rotate-90 text-emerald-500" />
       </div>
     </section>
   );
@@ -274,6 +296,7 @@ function QuizSection() {
 
 
 export default function Home({ theme }) {
+  useScrollReveal();
   const { user } = useAuth();
   const navigate = useNavigate();
   const { startHomeTour } = useOnboarding();
@@ -462,87 +485,21 @@ export default function Home({ theme }) {
   }, []);
 
   useEffect(() => {
-    if (loading) return;
-
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray('.char-reveal').forEach((heading) => {
-        const chars = heading.querySelectorAll('.char');
-        if (chars.length === 0) return;
-        gsap.fromTo(chars, 
-          { y: '100%', rotateX: -90, opacity: 0 },
-          { 
-            y: '0%', 
-            rotateX: 0, 
-            opacity: 1, 
-            duration: 1, 
-            stagger: 0.02, 
-            ease: 'back.out(1.7)',
-            scrollTrigger: {
-              trigger: heading,
-              start: 'top 90%',
-              toggleActions: 'play reverse play reverse',
-            }
-          }
-        );
-      });
-
-      if (window.innerWidth >= 1024) {
-        ScrollTrigger.create({
-          trigger: '#about-left',
-          start: 'top 120px',
-          endTrigger: '#about',
-          end: 'bottom bottom',
-          pin: true,
-          pinSpacing: false,
-          invalidateOnRefresh: true,
-        });
-
-        ScrollTrigger.create({
-          trigger: '#hero',
-          start: 'top top',
-          endTrigger: '#about',
-          end: 'top top',
-          pin: true,
-          pinSpacing: false,
-        });
-      }
-
-      gsap.utils.toArray('section').forEach((section) => {
-        const elements = section.querySelectorAll('.animate-on-scroll:not(.char-reveal)');
-        if (elements && elements.length > 0) {
-          gsap.fromTo(elements, 
-            { y: 30, opacity: 0, scale: 0.99 },
-            { 
-              y: 0, 
-              opacity: 1, 
-              scale: 1,
-              duration: 0.8,
-              stagger: { amount: 0.2, ease: "power2.out" },
-              ease: 'power3.out',
-              scrollTrigger: {
-                trigger: section,
-                start: window.innerWidth < 768 ? 'top 98%' : 'top 95%',
-                toggleActions: 'play none none none',
-                once: true
-              }
-            }
-          );
-        }
-      });
-    });
-
     const timer = setTimeout(() => {
       ScrollTrigger.refresh();
-    }, 100);
+    }, 150);
 
     return () => {
-      ctx.revert();
       clearTimeout(timer);
     };
-  }, [loading, showAllDomains]);
+  }, [loading]);
 
   return (
-    <div className="relative font-sans select-none overflow-x-hidden min-h-screen">
+    <div className="relative font-sans select-none overflow-x-clip min-h-screen">
+      {/* Shared WebGL Background - Mounted exactly once to save GPU memory & avoid lag */}
+      <div className="absolute top-0 left-0 right-0 h-[100dvh] pointer-events-none z-0">
+        <ThreeGridTunnel />
+      </div>
       <AnimatePresence>
         {loading && (
           <motion.div 
@@ -599,42 +556,29 @@ export default function Home({ theme }) {
             <BannerSpotlight banners={activeBanners} />
           </div>
         </div>
-      )}
-
-      {/* DESKTOP HERO */}
-      <section id="hero" className={`hidden md:flex relative min-h-[100vh] flex-col items-center justify-center pb-6 px-6 overflow-hidden bg-white dark:bg-slate-950 ${(showBanner && activeBanners.length > 0) ? 'pt-24 md:pt-32' : 'pt-32 md:pt-40'}`}>
+      )}      {/* DESKTOP HERO */}
+      <section id="hero" className={`hidden md:flex md:sticky md:top-0 md:z-0 min-h-[100vh] flex-col items-center justify-center pb-6 px-6 overflow-hidden bg-transparent ${(showBanner && activeBanners.length > 0) ? 'pt-24 md:pt-32' : 'pt-32 md:pt-40'}`}>
         {/* Shutter Doors */}
         <div id="hero-door-l" className="hero-door hero-door-left"></div>
         <div id="hero-door-r" className="hero-door hero-door-right"></div>
-        
-        {/* Background Layers (Solid White for Desktop) */}
-        <div className="absolute inset-0 z-0">
-          {/* Technical Grid Overlay */}
-          <div className="technical-grid opacity-10 dark:opacity-40" />
-        </div>
-
-        {/* Code Nebula Layer (Faded in center) */}
-        <CodeNebula />
-
+ 
         <div id="home-content" className="max-w-6xl mx-auto flex flex-col items-center text-center gap-6 w-full relative z-20">
           <div className="flex flex-col gap-6 items-center">
-            <h1 id="hero-title" className="font-black tracking-tight leading-[1.1] flex flex-col items-center text-center">
-              <span className="text-[#10b981] text-5xl md:text-[72px]">Welcome to GCC.</span>
-              <span className="text-[#0f172a] dark:text-white text-5xl md:text-[72px]">Learn Coding.</span>
-              <span className="text-[#10b981] text-5xl md:text-[72px]">Build Cool Projects.</span>
+            <h1 id="hero-title" className="text-[5rem] md:text-[7rem] lg:text-[8rem] leading-[0.85] font-black tracking-tighter text-slate-950 dark:text-white mb-2">
+              Learn <span className="text-emerald-500 dark:text-emerald-400">coding.</span>
             </h1>
-            <p id="hero-subtitle" className="text-[#334155] dark:text-slate-300 max-w-2xl text-base md:text-lg font-medium opacity-90 leading-relaxed px-4">
-              Unlock your potential at GAT Coding Club. Where innovation meets expertise, and beginners become masters of the digital realm.
+            <p id="hero-subtitle" className="text-lg md:text-xl font-normal max-w-xl leading-relaxed mb-6 text-slate-500 dark:text-slate-400">
+              Build the projects of your dreams to scale your skills and career, <span className="text-emerald-500 dark:text-emerald-400 font-semibold">infinitely</span>
             </p>
           </div>
 
-          <div id="hero-actions" className="flex flex-wrap items-center justify-center gap-4 mt-4 px-4">
+          <div id="hero-actions" className="flex items-center gap-6 mt-2">
             <Magnetic strength={0.3}>
               <Link 
                 to="/domains"
-                className="px-10 py-4 rounded-xl bg-[#10b981] text-white text-xs font-black hover:bg-emerald-600 transition-all shadow-[0_15px_30px_rgba(16,185,129,0.25)] flex items-center gap-3 group uppercase tracking-widest"
+                className="rounded-full px-8 py-3.5 text-sm font-medium transition-all duration-300 bg-emerald-500 text-white hover:bg-emerald-600 shadow-[0_8px_20px_rgba(16,185,129,0.25)] dark:shadow-[0_8px_20px_rgba(16,185,129,0.15)]"
               >
-                Explore Domains <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                Explore Domains
               </Link>
             </Magnetic>
             
@@ -644,9 +588,9 @@ export default function Home({ theme }) {
                   const el = document.getElementById('about');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="px-10 py-4 rounded-xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-white/20 text-slate-900 dark:text-white text-xs font-black flex items-center gap-3 hover:bg-slate-50 transition-all uppercase tracking-widest"
+                className="text-sm font-medium hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors flex items-center gap-1 text-emerald-600 dark:text-emerald-400"
               >
-                Our Mission
+                Our Mission <span>→</span>
               </button>
             </Magnetic>
           </div>
@@ -660,37 +604,39 @@ export default function Home({ theme }) {
         <div className="absolute right-[4vw] bottom-[10dvh] flex flex-col gap-8 items-end text-right z-30">
            <div className="flex flex-col gap-1.5 group animate-on-scroll items-end text-right">
              <div className="w-6 h-[2px] bg-emerald-500 mb-1"></div>
-             <span className="text-4xl font-black text-slate-900 dark:text-white leading-none">500+</span>
+             <span className="text-4xl font-black text-emerald-500 dark:text-emerald-400 leading-none">500+</span>
              <span className="text-[9px] font-black tracking-[0.2em] text-slate-400 uppercase">Members</span>
            </div>
            <div className="flex flex-col gap-1.5 group animate-on-scroll items-end text-right">
              <div className="w-6 h-[2px] bg-emerald-500 mb-1"></div>
-             <span className="text-4xl font-black text-slate-900 dark:text-white leading-none">15+</span>
+             <span className="text-4xl font-black text-emerald-500 dark:text-emerald-400 leading-none">15+</span>
              <span className="text-[9px] font-black tracking-[0.2em] text-slate-400 uppercase">Projects</span>
            </div>
         </div>
       </div>
 
-      <section id="about" className="relative z-10 py-16 md:py-32 px-4 sm:px-6 border-t border-black/5 dark:border-white/5 select-none overflow-hidden">
-        <div className="absolute inset-0 bg-white/40 dark:bg-slate-950/40 backdrop-blur-[60px] z-0" />
+      <section id="about" className="relative z-20 py-16 md:py-32 px-4 sm:px-6 border-t border-black/5 dark:border-white/5 bg-white dark:bg-slate-950 select-none overflow-x-clip">
+        <div className="absolute inset-0 bg-white/90 dark:bg-slate-950/90 backdrop-blur-[20px] z-0" />
         
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-12 gap-12 md:gap-16 items-start relative z-10">
-          <div id="about-left" className="lg:col-span-5 self-start flex flex-col gap-6 md:gap-8 animate-on-scroll">
-            <span className="text-xs md:text-sm font-bold uppercase tracking-widest text-brand flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 animate-pulse" /> WHO WE ARE
-            </span>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-tight text-slate-900 dark:text-white char-reveal">
-              <SplitText text="About Our " />
-              <span className="text-emerald-500">
-                <SplitText text="Club" />
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-12 gap-12 md:gap-16 relative z-10">
+          <div id="about-left" className="lg:col-span-5">
+            <div className="lg:sticky lg:top-[120px] flex flex-col gap-6 md:gap-8 animate-on-scroll">
+              <span className="text-xs md:text-sm font-bold uppercase tracking-widest text-brand flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5 animate-pulse" /> WHO WE ARE
               </span>
-            </h2>
-            <p className="text-sm md:text-base font-medium text-slate-600 dark:text-slate-400 leading-relaxed animate-on-scroll">
-              We are a group of students who love technology. We work together to learn new skills and build amazing software projects.
-            </p>
-            <p className="text-sm md:text-base font-medium text-slate-600 dark:text-slate-400 leading-relaxed animate-on-scroll">
-              We organize workshops and competitions to help students get better at coding. We believe in learning by doing and help everyone build projects that solve real problems.
-            </p>
+              <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-tight text-slate-900 dark:text-white char-reveal">
+                <SplitText text="About Our " />
+                <span className="text-emerald-500">
+                  <SplitText text="Club" />
+                </span>
+              </h2>
+              <p className="text-sm md:text-base font-medium text-slate-600 dark:text-slate-400 leading-relaxed animate-on-scroll">
+                We are a group of students who love technology. We work together to learn new skills and build amazing software projects.
+              </p>
+              <p className="text-sm md:text-base font-medium text-slate-600 dark:text-slate-400 leading-relaxed animate-on-scroll">
+                We organize workshops and competitions to help students get better at coding. We believe in learning by doing and help everyone build projects that solve real problems.
+              </p>
+            </div>
           </div>
 
             <div className="lg:col-span-7 flex flex-col gap-8 md:gap-12">
@@ -748,403 +694,440 @@ export default function Home({ theme }) {
       </section>
 
       {/* Domains Section */}
-      <section id="domains" className="relative py-24 md:py-0 overflow-hidden bg-slate-50 dark:bg-[#050811] z-20">
-        <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.03] dark:opacity-[0.05]" />
-        
-        {/* Header Section */}
-        <div className="max-w-7xl mx-auto mb-12 md:mb-3 flex flex-col md:flex-row md:items-end justify-between gap-8 px-6 md:px-0">
-          <div className="flex flex-col gap-4 max-w-2xl animate-on-scroll">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-[2px] bg-emerald-500"></div>
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500">The Ecosystem</span>
-            </div>
-            <h2 className="text-3xl md:text-6xl font-black tracking-tighter text-slate-900 dark:text-white leading-[0.9] uppercase char-reveal">
-              Specialized <span className="text-emerald-500">Domains</span>
-            </h2>
-            <p className="text-slate-500 dark:text-slate-400 font-bold text-[11px] md:text-xs max-w-lg leading-relaxed">
-              Explore our elite vertical divisions. Dedicated ecosystems of tools, mentorship, and high-impact projects.
-            </p>
-          </div>
-        </div>
+      <section id="domains" className="relative py-24 md:py-32 overflow-hidden bg-slate-50 dark:bg-slate-900 z-20">
+        {/* Background decoration */}
+        <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:44px_44px] opacity-[0.03] dark:opacity-[0.05]" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-400/5 dark:bg-emerald-500/8 rounded-full blur-[120px] pointer-events-none" />
 
-        {/* Domains Grid Container */}
-        <div className="max-w-7xl mx-auto px-6 md:px-0">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-            {domainsLoading ? (
-              Array(4).fill(0).map((_, i) => (
-                <div key={i} className="glass-panel h-[380px] animate-pulse bg-slate-100 dark:bg-slate-900/50 rounded-[2rem]" />
-              ))
-            ) : domains.length === 0 ? (
-              <div className="col-span-full py-20 text-center">
-                 <Zap className="w-10 h-10 text-slate-200 dark:text-slate-800 mx-auto mb-4" />
-                 <h3 className="text-lg font-black text-slate-300 dark:text-slate-700 uppercase tracking-widest">No Active Sectors Found</h3>
+        <div className="max-w-7xl mx-auto px-6">
+          {/* Section Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-14 animate-on-scroll">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-[2px] bg-emerald-500" />
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600 dark:text-emerald-500">The Ecosystem</span>
               </div>
-            ) : (
-              domains.slice(0, 4).map((domain, idx) => (
-                <div 
-                  key={domain._id} 
-                  className="group relative flex flex-col h-[380px] rounded-[2rem] overflow-hidden bg-white dark:bg-slate-900/40 border border-black/5 dark:border-white/5 hover:border-emerald-500/30 transition-all duration-700 hover:shadow-xl hover:shadow-emerald-500/10 animate-on-scroll"
-                  style={{ transitionDelay: `${idx * 100}ms` }}
-                >
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-[100%] transition-all duration-700" />
-                  
-                  <div className="relative z-10 flex flex-col h-full p-6 md:p-8 justify-between">
-                    <div className="flex flex-col gap-6">
-                      <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 shadow-md group-hover:scale-110 transition-all duration-700">
-                        {IconMap[domain.icon] || <Layers className="w-7 h-7" />}
-                      </div>
-                      
-                      <div className="flex flex-col gap-3">
-                        <div className="flex items-center gap-2">
-                           <div className="w-1 h-1 rounded-full bg-emerald-500" />
-                           <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Sector Active</span>
-                        </div>
-                        <h3 className="text-lg font-black text-slate-900 dark:text-white leading-tight tracking-tight uppercase group-hover:text-emerald-500 transition-colors">
-                          {domain.title}
-                        </h3>
-                        <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">
-                          {domain.desc}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-4 pt-6 border-t border-black/5 dark:border-white/5">
-                      <div className="grid grid-cols-2 gap-3">
-                        <Link 
-                          to={`/register/domain/${domain._id}`} 
-                          className="py-3 rounded-xl bg-slate-950 dark:bg-white text-white dark:text-slate-950 text-[9px] font-black tracking-widest uppercase hover:scale-[1.02] active:scale-[0.98] transition-all text-center flex items-center justify-center gap-2"
-                        >
-                          JOIN <Zap className="w-2.5 h-2.5 text-emerald-500" />
-                        </Link>
-                        <Link 
-                          to={`/domain/${domain.slug}`} 
-                          className="py-3 rounded-xl bg-white dark:bg-slate-800 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-[9px] font-black tracking-widest uppercase hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-center flex items-center justify-center"
-                        >
-                          DETAILS
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.88] text-slate-900 dark:text-white">
+                Specialized<br />
+                <span className="text-emerald-500">Domains.</span>
+              </h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm leading-relaxed font-medium">
+                Elite divisions with dedicated tools, mentorship, and high-impact projects.
+              </p>
+            </div>
+            <Link to="/domains" className="group hidden md:flex items-center gap-2 self-end px-6 py-3 rounded-full border border-emerald-500/30 text-emerald-600 dark:text-emerald-500 text-xs font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all duration-300">
+              All Domains <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
           </div>
 
-          {/* View More Button */}
-          {!domainsLoading && domains.length > 4 && (
-            <div className="flex justify-center pb-24 animate-on-scroll">
-              <Link 
-                to="/domains"
-                className="group flex items-center gap-4 px-12 py-5 rounded-2xl bg-white dark:bg-slate-900 border border-black/5 dark:border-white/10 text-slate-900 dark:text-white font-black text-[11px] tracking-widest uppercase shadow-2xl hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all"
-              >
-                <span>Discover All Domains</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          )}
+          {/* Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {domainsLoading ? Array(4).fill(0).map((_, i) => (
+              <div key={i} className="h-72 rounded-2xl animate-pulse bg-slate-200 dark:bg-slate-800" />
+            )) : domains.length === 0 ? (
+              <div className="col-span-full py-16 text-center">
+                <Zap className="w-8 h-8 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
+                <p className="text-sm font-black text-slate-400 dark:text-slate-600 uppercase tracking-widest">No domains yet</p>
+              </div>
+            ) : domains.slice(0, 4).map((domain, idx) => (
+              <div key={domain._id} className="group relative flex flex-col bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-white/8 rounded-2xl p-6 hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/8 transition-all duration-400 animate-on-scroll" style={{ transitionDelay: `${idx * 70}ms` }}>
+                {/* Index */}
+                <span className="absolute top-4 right-5 text-[10px] font-black text-slate-300 dark:text-slate-700 tabular-nums">{String(idx + 1).padStart(2, '0')}</span>
+
+                {/* Icon */}
+                <div className="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-500 mb-5 group-hover:scale-110 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-500/20 transition-all duration-300">
+                  {IconMap[domain.icon] || <Layers className="w-5 h-5" />}
+                </div>
+
+                {/* Status dot */}
+                <div className="flex items-center gap-1.5 mb-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[9px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-widest">Active</span>
+                </div>
+
+                {/* Title & desc */}
+                <h3 className="text-base font-black text-slate-900 dark:text-white leading-tight mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{domain.title}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3 flex-1">{domain.desc}</p>
+
+                {/* Buttons */}
+                <div className="flex gap-2 mt-5 pt-4 border-t border-slate-100 dark:border-white/5">
+                  <Link to={`/register/domain/${domain._id}`} className="flex-1 py-2 rounded-lg bg-emerald-500 text-white text-[9px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-colors text-center">Join</Link>
+                  <Link to={`/domain/${domain.slug}`} className="flex-1 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[9px] font-black uppercase tracking-widest hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors text-center">Details</Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile CTA */}
+          <div className="flex md:hidden justify-center mt-10">
+            <Link to="/domains" className="flex items-center gap-2 px-6 py-3 rounded-full border border-emerald-500/30 text-emerald-600 dark:text-emerald-500 text-xs font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all">
+              All Domains <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* Events Section */}
-      <section id="events" className="relative py-32 bg-white dark:bg-black overflow-hidden z-20">
-         <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
-          {/* Header with Admin Shortcut */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 animate-on-scroll">
-            <div className="flex flex-col gap-6 max-w-2xl">
+      <section id="events" className="relative py-24 md:py-32 bg-white dark:bg-slate-950 overflow-hidden z-20">
+        {/* Ambient glow */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-emerald-500/5 blur-[100px] rounded-full pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-6">
+
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 animate-on-scroll">
+            <div className="flex flex-col gap-5">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-[2px] bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
-                <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-emerald-500">System Activity Log</span>
+                <div className="w-10 h-[2px] bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+                <span className="text-[10px] font-black uppercase tracking-[0.35em] text-emerald-500">Activity Log</span>
               </div>
-              <h2 className="text-5xl md:text-8xl font-black tracking-tighter text-slate-900 dark:text-white leading-[0.85] uppercase char-reveal">
-                Latest <span className="text-emerald-500">Activities</span>
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-slate-900 dark:text-white leading-[0.88]">
+                Latest<br />
+                <span className="text-emerald-500">Activities.</span>
               </h2>
-              <p className="text-slate-500 dark:text-slate-400 font-bold text-sm md:text-base max-w-lg leading-relaxed">
-                The heartbeat of GAT Coding Club. From high-stakes hackathons to precision workshops and elite recruitment drives.
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400 max-w-md leading-relaxed">
+                From hackathons to workshops and elite recruitment drives.
               </p>
             </div>
-
-            <div className="flex flex-col gap-4">
-              <Link 
-                to="/events" 
-                className="group flex items-center gap-4 px-10 py-5 rounded-2xl bg-emerald-500 text-white font-black text-[11px] tracking-widest uppercase shadow-2xl shadow-emerald-500/30 hover:scale-105 transition-all"
-              >
-                <span>Full Event Archive</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
+            <Link
+              to="/events"
+              className="group hidden md:flex items-center gap-3 self-end px-7 py-3.5 rounded-full border border-emerald-500/30 text-emerald-600 dark:text-emerald-500 text-xs font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all duration-300"
+            >
+              Full Archive <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
 
-          {/* Dynamic Event Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 mt-20">
+          {/* Event Cards */}
+          <div className="flex flex-col gap-5">
             {eventsLoading ? (
-              Array(3).fill(0).map((_, i) => (
-                <div key={i} className="glass-panel h-[500px] animate-pulse bg-slate-100 dark:bg-slate-900/50 rounded-[3rem]" />
+              Array(4).fill(0).map((_, i) => (
+                <div key={i} className="h-[140px] rounded-2xl animate-pulse bg-slate-200 dark:bg-slate-800" />
               ))
             ) : events.length === 0 ? (
-              <div className="col-span-full py-32 text-center">
-                 <Zap className="w-16 h-16 text-slate-200 dark:text-slate-800 mx-auto mb-6" />
-                 <h3 className="text-2xl font-black text-slate-300 dark:text-slate-700 uppercase tracking-widest">No Active Transmissions</h3>
+              <div className="py-24 text-center">
+                <Zap className="w-10 h-10 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
+                <h3 className="text-lg font-black text-slate-400 dark:text-slate-600 uppercase tracking-widest">No Active Transmissions</h3>
               </div>
             ) : (
-              events
-                .filter(ev => ev.isActive !== false)
-                .slice(0, 3)
-                .map((item, idx) => (
-                  <div 
-                    key={item._id} 
-                    className="group relative flex flex-col h-[520px] md:h-[600px] rounded-[3rem] overflow-hidden bg-slate-50 dark:bg-slate-900/40 border border-black/5 dark:border-white/5 hover:border-emerald-500/30 transition-all duration-700 hover:-translate-y-4 hover:shadow-2xl hover:shadow-emerald-500/10 animate-on-scroll"
-                    style={{ transitionDelay: `${idx * 100}ms` }}
-                  >
-                    {/* Background Image with Parallax-like Effect */}
-                    <div className="absolute inset-0 z-0">
-                      <img 
-                        src={item.image || 'https://via.placeholder.com/800x1200'} 
-                        alt={item.title} 
-                        className="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000 opacity-40 dark:opacity-30" 
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-slate-950 dark:via-slate-950/80 dark:to-transparent" />
-                    </div>
-
-                    {/* Content Overlay */}
-                    <div className="relative z-10 flex flex-col h-full p-8 md:p-12 justify-end gap-8">
-                       <div className="flex flex-col gap-4">
-                          <div className="flex items-center gap-3">
-                             <span className="px-4 py-1.5 rounded-full bg-emerald-500 text-white text-[9px] font-black tracking-widest uppercase shadow-lg shadow-emerald-500/20">
-                               {item.type || 'Event'}
-                             </span>
-                             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/50 dark:bg-white/5 backdrop-blur-md border border-black/5 dark:border-white/10">
-                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                <span className="text-[9px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest">{item.category}</span>
-                             </div>
-                          </div>
-                          
-                          <h3 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white leading-[0.95] tracking-tighter uppercase group-hover:text-emerald-500 transition-colors">
-                            {item.title}
-                          </h3>
-                       </div>
-
-                       <p className="text-sm font-bold text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
-                          {item.description || "An elite technical gathering hosted by GAT Coding Club."}
-                       </p>
-
-                       <div className="flex flex-col gap-6 pt-6 border-t border-black/5 dark:border-white/5">
-                          <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
-                             <div className="flex items-center gap-2">
-                                <Calendar className="w-4 h-4 text-emerald-500" />
-                                <span>{new Date(item.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-                             </div>
-                             <div className="flex items-center gap-2">
-                                <Globe className="w-4 h-4 text-emerald-500" />
-                                <span>{item.venue}</span>
-                             </div>
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-4">
-                             <Link 
-                               to={`/register/event/${item._id}`}
-                               className="py-4 rounded-2xl bg-slate-950 dark:bg-white text-white dark:text-slate-950 text-[10px] font-black tracking-widest uppercase hover:scale-[1.02] active:scale-[0.98] transition-all text-center flex items-center justify-center gap-2 group/btn shadow-xl"
-                             >
-                               Register <Zap className="w-3 h-3 text-emerald-500" />
-                             </Link>
-                             
-                             <Link 
-                               to={`/event/${item._id}`}
-                               className="py-4 rounded-2xl bg-white dark:bg-slate-800 border border-black/5 dark:border-white/5 text-slate-900 dark:text-white text-[10px] font-black tracking-widest uppercase hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-center flex items-center justify-center"
-                             >
-                               Details
-                             </Link>
-                          </div>
-                       </div>
-                    </div>
-
-                    {/* Elite Corner Decoration */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-bl-[100%] transition-all duration-700 group-hover:bg-emerald-500/10" />
+              events.filter(ev => ev.isActive !== false).slice(0, 4).map((item, idx) => (
+                <div
+                  key={item._id}
+                  className="group relative flex flex-col md:flex-row items-stretch rounded-2xl overflow-hidden border border-slate-200 dark:border-white/5 hover:border-emerald-500/40 bg-white dark:bg-slate-900 transition-all duration-400 hover:shadow-lg hover:shadow-emerald-500/8 animate-on-scroll"
+                  style={{ transitionDelay: `${idx * 60}ms` }}
+                >
+                  {/* Image panel */}
+                  <div className="relative md:w-64 lg:w-80 h-48 md:h-auto flex-shrink-0 overflow-hidden">
+                    <img
+                      src={item.image || 'https://via.placeholder.com/600x400'}
+                      alt={item.title}
+                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-60 group-hover:opacity-90"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-white/60 dark:from-slate-900/0 dark:to-slate-900/60 md:block hidden" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-white/80 dark:from-slate-900/80 to-transparent md:hidden" />
+                    <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-emerald-500 text-white text-[9px] font-black uppercase tracking-widest shadow-lg">
+                      {item.type || item.category || 'Event'}
+                    </span>
                   </div>
-                ))
+
+                  {/* Content */}
+                  <div className="flex-1 flex flex-col md:flex-row items-stretch justify-between gap-6 p-6 md:p-8">
+                    <div className="flex flex-col justify-between gap-4 flex-1">
+                      <div className="flex flex-col gap-2">
+                        <h3 className="text-lg md:text-xl font-black text-slate-900 dark:text-white tracking-tight leading-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-300">
+                          {item.title}
+                        </h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-500 leading-relaxed line-clamp-2">
+                          {item.description || 'An elite technical gathering hosted by GAT Coding Club.'}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-600">
+                        <span className="flex items-center gap-1.5">
+                          <Calendar className="w-3.5 h-3.5 text-emerald-500" />
+                          {new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </span>
+                        {item.venue && (
+                          <span className="flex items-center gap-1.5">
+                            <Globe className="w-3.5 h-3.5 text-emerald-500" />
+                            {item.venue}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex md:flex-col items-center justify-start md:justify-center gap-3 flex-shrink-0">
+                      <Link
+                        to={`/register/event/${item._id}`}
+                        className="px-5 py-2.5 rounded-full bg-emerald-500 text-white text-[9px] font-black uppercase tracking-widest hover:bg-emerald-600 active:scale-95 transition-all text-center whitespace-nowrap"
+                      >
+                        Register
+                      </Link>
+                      <Link
+                        to={`/event/${item._id}`}
+                        className="px-5 py-2.5 rounded-full border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 text-[9px] font-black uppercase tracking-widest hover:border-emerald-500/40 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all text-center whitespace-nowrap"
+                      >
+                        Details
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Index */}
+                  <div className="absolute bottom-4 right-6 text-[10px] font-black text-slate-400 dark:text-slate-700 tabular-nums tracking-widest group-hover:text-emerald-500/40 transition-colors">
+                    {String(idx + 1).padStart(2, '0')}
+                  </div>
+                </div>
+              ))
             )}
           </div>
+
+          {/* Mobile view all */}
+          <div className="flex md:hidden justify-center mt-10">
+            <Link
+              to="/events"
+              className="flex items-center gap-2 px-7 py-3 rounded-full border border-emerald-500/30 text-emerald-600 dark:text-emerald-500 text-xs font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all duration-300"
+            >
+              Full Archive <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
         </div>
       </section>
 
       {/* Coding Hub / Live Rooms Teaser */}
-      <section id="live-rooms-preview" className="relative py-32 overflow-hidden bg-slate-900 z-20">
-        <div className="absolute inset-0 bg-slate-900" />
-        <div className="max-w-6xl mx-auto px-6 flex flex-col lg:flex-row gap-12 lg:gap-20 items-center animate-on-scroll relative z-10">
-          <div className="flex-1 flex flex-col gap-6 order-2 lg:order-1">
-              <span className="text-xs font-bold uppercase tracking-widest text-brand flex items-center gap-2">
-                <Video className="w-3.5 h-3.5" /> Live Community Arena
-              </span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-white">
-                Join Active{' '}
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-cyan-500">
-                  Live
-                </span>{' '}
-                Sessions
+      <section id="live-rooms-preview" className="relative py-24 md:py-32 overflow-hidden bg-slate-50 dark:bg-slate-900 z-20">
+        {/* Background decorations */}
+        <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:44px_44px] opacity-[0.03] dark:opacity-[0.05]" />
+        <div className="absolute top-1/2 left-0 w-80 h-80 bg-emerald-400/5 dark:bg-emerald-500/8 rounded-full blur-[100px] -translate-y-1/2 pointer-events-none" />
+        <div className="absolute top-1/2 right-0 w-80 h-80 bg-blue-400/5 dark:bg-blue-500/5 rounded-full blur-[100px] -translate-y-1/2 pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+            {/* Left: Content */}
+            <div className="flex flex-col gap-7 animate-on-scroll order-2 lg:order-1">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-[2px] bg-emerald-500" />
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600 dark:text-emerald-500 flex items-center gap-2">
+                  <Video className="w-3.5 h-3.5" /> Live Community Arena
+                </span>
+              </div>
+
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.88] text-slate-900 dark:text-white">
+                Code Together,<br />
+                <span className="text-emerald-500">Live.</span>
               </h2>
-              <p className="text-sm md:text-base font-medium text-slate-400 leading-relaxed max-w-md">
-                Engage with fellow developers in real-time. From technical workshops to coding marathons and intense debates, the Arena is where the club comes alive.
+
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400 leading-relaxed max-w-md">
+                Engage with fellow developers in real-time. From technical workshops to coding marathons and intense debates — the Arena is where the club comes alive.
               </p>
 
-              <div className="flex flex-wrap gap-3">
+              {/* Feature pills */}
+              <div className="flex flex-wrap gap-2">
                 {[
-                  { label: 'Real-time Interaction', color: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' },
-                  { label: 'Voice & Video', color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20' },
-                  { label: 'Screen Share', color: 'bg-blue-500/10 text-blue-600 border-blue-500/20' },
-                ].map(({ label, color }) => (
-                  <span key={label} className={`px-4 py-1.5 rounded-full text-[10px] font-black border ${color} uppercase tracking-widest`}>
-                    {label}
+                  { label: 'Real-time Interaction', icon: '⚡' },
+                  { label: 'Voice & Video', icon: '🎙️' },
+                  { label: 'Screen Share', icon: '🖥️' },
+                ].map(({ label, icon }) => (
+                  <span key={label} className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-black border border-slate-200 dark:border-white/8 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 uppercase tracking-widest">
+                    {icon} {label}
                   </span>
                 ))}
               </div>
 
-              <Link to="/live-rooms" className="w-max px-8 py-4 rounded-full bg-white text-slate-900 text-sm font-black flex items-center gap-2 hover:scale-105 transition-all shadow-xl hover:shadow-emerald-500/20 uppercase tracking-widest">
-                Enter Arena <ArrowRight className="w-4 h-4" />
+              <Link
+                to="/live-rooms"
+                className="group w-max flex items-center gap-3 px-8 py-4 rounded-full bg-emerald-500 text-white text-sm font-black uppercase tracking-widest hover:bg-emerald-600 active:scale-95 transition-all shadow-lg shadow-emerald-500/20"
+              >
+                Enter Arena <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
 
-            <div className="flex-1 w-full max-w-lg order-1 lg:order-2">
-              <div className="glass-panel p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-brand/10 blur-3xl rounded-full -mr-16 -mt-16 group-hover:bg-brand/20 transition-colors" />
-                
-                <div className="flex items-center justify-between relative z-10">
-                  <div className="flex gap-2">
-                    <span className="px-3 py-1 rounded-full text-[10px] font-black border bg-emerald-500/10 text-emerald-600 border-emerald-500/20 uppercase tracking-widest animate-pulse">Live</span>
-                    <span className="px-3 py-1 rounded-full text-[10px] font-black border bg-slate-800 text-slate-300 border-white/5 uppercase tracking-widest">Coding Room</span>
+            {/* Right: Live Room Preview Card */}
+            <div className="order-1 lg:order-2 animate-on-scroll">
+              <div className="relative bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-white/8 rounded-3xl overflow-hidden shadow-xl shadow-slate-200/60 dark:shadow-black/40">
+                {/* Top glow accent */}
+                <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-2xl -translate-y-12 translate-x-12 pointer-events-none" />
+
+                {/* Card Header */}
+                <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 dark:border-white/5">
+                  <div className="flex items-center gap-2">
+                    <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black border bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 uppercase tracking-widest">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Live
+                    </span>
+                    <span className="px-3 py-1 rounded-full text-[9px] font-black bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 uppercase tracking-widest">Coding Room</span>
                   </div>
-                  <div className="flex items-center gap-2 text-slate-400">
-                    <Users className="w-4 h-4" />
+                  <div className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500">
+                    <Users className="w-3.5 h-3.5" />
                     <span className="text-xs font-black">12 Active</span>
                   </div>
                 </div>
 
-                <div className="space-y-4 relative z-10">
-                  <h4 className="text-xl font-black text-white uppercase tracking-tight">System Architecture Deep Dive</h4>
-                  <div className="flex -space-x-3">
-                    {[1, 2, 3, 4].map(i => (
-                      <div key={i} className="w-10 h-10 rounded-full border-4 border-slate-900 bg-slate-800 overflow-hidden">
-                        <img src={`https://i.pravatar.cc/150?u=${i}`} alt="user" className="w-full h-full object-cover" />
-                      </div>
-                    ))}
-                    <div className="w-10 h-10 rounded-full border-4 border-slate-900 bg-brand text-white flex items-center justify-center text-[10px] font-black">+8</div>
+                {/* Room Info */}
+                <div className="px-6 py-5 border-b border-slate-100 dark:border-white/5">
+                  <h4 className="text-base font-black text-slate-900 dark:text-white tracking-tight mb-4">System Architecture Deep Dive</h4>
+                  <div className="flex items-center justify-between">
+                    <div className="flex -space-x-2.5">
+                      {[1, 2, 3, 4].map(i => (
+                        <div key={i} className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-800 bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                          <img src={`https://i.pravatar.cc/150?u=${i}`} alt="user" className="w-full h-full object-cover" />
+                        </div>
+                      ))}
+                      <div className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-800 bg-emerald-500 text-white flex items-center justify-center text-[9px] font-black">+8</div>
+                    </div>
+                    <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">In session · 48m</span>
                   </div>
                 </div>
 
-                <div className="bg-slate-950 rounded-2xl p-4 border border-white/5 relative z-10 group-hover:border-brand/30 transition-colors">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Streaming Terminal</span>
+                {/* Terminal */}
+                <div className="bg-slate-950 m-4 rounded-2xl p-4 border border-white/5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
+                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Streaming Terminal</span>
                   </div>
-                  <div className="font-mono text-xs text-emerald-400/80 space-y-1">
-                    <div className="flex gap-2"><span className="text-slate-600">01</span> <span className="text-pink-400">async function</span> <span className="text-blue-400">optimizePipeline</span>() {"{"}</div>
-                    <div className="flex gap-2"><span className="text-slate-600">02</span> &nbsp;&nbsp;<span className="text-pink-400">const</span> nodes = <span className="text-pink-400">await</span> fetchNodes();</div>
-                    <div className="flex gap-2"><span className="text-slate-600">03</span> &nbsp;&nbsp;<span className="text-pink-400">return</span> nodes.<span className="text-blue-400">map</span>(n ={'>'} n.<span className="text-yellow-400">id</span>);</div>
-                    <div className="flex gap-2"><span className="text-slate-600">04</span> {"}"}</div>
+                  <div className="font-mono text-xs space-y-1.5">
+                    <div className="flex gap-3"><span className="text-slate-600 select-none">01</span><span><span className="text-pink-400">async function</span> <span className="text-blue-400">optimizePipeline</span><span className="text-slate-300">() {'{'}</span></span></div>
+                    <div className="flex gap-3"><span className="text-slate-600 select-none">02</span><span className="text-slate-300">&nbsp;&nbsp;<span className="text-pink-400">const</span> nodes = <span className="text-pink-400">await</span> <span className="text-blue-400">fetchNodes</span>();</span></div>
+                    <div className="flex gap-3"><span className="text-slate-600 select-none">03</span><span className="text-slate-300">&nbsp;&nbsp;<span className="text-pink-400">return</span> nodes.<span className="text-blue-400">map</span>(n <span className="text-pink-400">=&gt;</span> n.<span className="text-yellow-400">id</span>);</span></div>
+                    <div className="flex gap-3"><span className="text-slate-600 select-none">04</span><span className="text-emerald-400">{'}'} <span className="text-slate-600 animate-pulse">█</span></span></div>
                   </div>
+                </div>
+
+                {/* Join CTA inside card */}
+                <div className="px-4 pb-4">
+                  <Link to="/live-rooms" className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-emerald-500 text-white text-xs font-black uppercase tracking-widest hover:bg-emerald-600 transition-colors">
+                    <Video className="w-3.5 h-3.5" /> Join Room
+                  </Link>
+                </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
 
       <QuizSection />
 
-      {/* 7. Premium SaaS-style Leaderboard Table Section */}
-      <section id="leaderboard" className="py-24 md:py-48 px-4 sm:px-6 relative z-10 overflow-hidden bg-slate-50 dark:bg-slate-950/50">
-        <div className="max-w-6xl mx-auto flex flex-col gap-20 relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 animate-on-scroll">
-            <div className="flex flex-col gap-6 max-w-2xl">
+      {/* Leaderboard Section */}
+      <section id="leaderboard" className="py-24 md:py-32 px-6 relative z-20 overflow-hidden bg-white dark:bg-slate-950">
+        {/* Subtle background */}
+        <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:44px_44px] opacity-[0.025] dark:opacity-[0.04]" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-emerald-400/5 dark:bg-emerald-500/8 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="max-w-5xl mx-auto relative z-10">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-14 animate-on-scroll">
+            <div className="flex flex-col gap-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-[2px] bg-brand shadow-[0_0_10px_rgba(var(--brand-rgb),0.5)]"></div>
-                <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-brand">Global Rankings</span>
+                <div className="w-8 h-[2px] bg-emerald-500" />
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600 dark:text-emerald-500">Global Rankings</span>
               </div>
-              <h2 className="text-5xl md:text-8xl font-black tracking-tighter text-slate-900 dark:text-white leading-[0.85] uppercase char-reveal">
-                Elite <span className="text-brand">Leaderboard</span>
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.88] text-slate-900 dark:text-white">
+                Elite<br />
+                <span className="text-emerald-500">Leaderboard.</span>
               </h2>
-              <p className="text-slate-500 dark:text-slate-400 font-bold text-sm md:text-base max-w-lg leading-relaxed">
-                The absolute vanguard of technical excellence. Track the top performers as they compete for dominance in the GAT ecosystem.
+              <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm leading-relaxed font-medium">
+                The top performers competing for dominance in the GAT ecosystem.
               </p>
             </div>
+            <Link to="/leaderboard" className="group hidden md:flex items-center gap-2 self-end px-6 py-3 rounded-full border border-emerald-500/30 text-emerald-600 dark:text-emerald-500 text-xs font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all duration-300">
+              Full Rankings <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
           </div>
 
-          <div className="glass-panel overflow-hidden border-black/5 dark:border-white/5 bg-white/50 dark:bg-slate-900/50 backdrop-blur-3xl rounded-[3rem] shadow-2xl animate-on-scroll">
-            <div className="overflow-x-auto scrollbar-hide">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-black/5 dark:border-white/10 bg-black/5 dark:bg-white/5">
-                    <th className="px-8 py-8 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Rank</th>
-                    <th className="px-8 py-8 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Operator</th>
-                    <th className="px-8 py-8 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] text-right">XP Credits</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-black/5 dark:divide-white/5">
-                  {leaderboardLoading ? (
-                    Array(4).fill(0).map((_, i) => (
-                      <tr key={i} className="animate-pulse">
-                        <td className="px-8 py-8"><div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg" /></td>
-                        <td className="px-8 py-8"><div className="w-48 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg" /></td>
-                        <td className="px-8 py-8"><div className="w-20 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg" /></td>
-                      </tr>
-                    ))
-                  ) : (leaderboard || []).length === 0 ? (
-                    <tr>
-                      <td colSpan="3" className="px-8 py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">No Rankings Recorded Yet</td>
-                    </tr>
-                  ) : (
-                    leaderboard.slice(0, 10).map((row, idx) => {
-                      const rankNum = (idx + 1).toString().padStart(2, '0');
-                      const rankColor = idx === 0 ? 'text-brand' : idx === 1 ? 'text-emerald-500' : idx === 2 ? 'text-blue-500' : 'text-slate-300 dark:text-slate-700';
-                      
-                      return (
-                        <tr key={row._id} className="group hover:bg-brand/5 transition-all duration-300">
-                          <td className="px-8 py-8">
-                            <span className={`text-2xl font-black tracking-tighter ${rankColor}`}>
-                              {rankNum}
-                            </span>
-                          </td>
-                          <td className="px-8 py-8">
-                            <div className="flex items-center gap-5">
-                              <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-black text-slate-400 border border-black/5 dark:border-white/10 group-hover:border-brand/30 transition-all overflow-hidden shadow-sm">
-                                 {row.avatar ? (
-                                   <img src={row.avatar} className="w-full h-full object-cover" alt="" />
-                                 ) : (
-                                   row.name.charAt(0)
-                                 )}
-                              </div>
-                              <div className="flex flex-col">
-                                <span className="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight group-hover:text-brand transition-colors">{row.name}</span>
-                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.1em]">{row.department} • {row.year}</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-8 py-8 text-right">
-                            <div className="flex flex-col items-end">
-                               <span className="text-xl font-black text-slate-900 dark:text-white tracking-tighter group-hover:text-brand transition-all">
-                                 {row.totalPoints || 0}
-                               </span>
-                               <div className="w-24 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full mt-2 overflow-hidden">
-                                  <div className="h-full bg-brand rounded-full" style={{ width: `${Math.min(100, (row.totalPoints / 1000) * 100)}%` }} />
-                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
+          {/* Top 3 Podium */}
+          {!leaderboardLoading && (leaderboard || []).length >= 3 && (
+            <div className="grid grid-cols-3 gap-3 md:gap-4 mb-6 animate-on-scroll">
+              {/* 2nd place */}
+              {[leaderboard[1], leaderboard[0], leaderboard[2]].map((row, podiumIdx) => {
+                const actualRank = podiumIdx === 0 ? 2 : podiumIdx === 1 ? 1 : 3;
+                const medals = ['🥈', '🥇', '🥉'];
+                const heights = ['pt-6', 'pt-0', 'pt-8'];
+                const rings = ['border-slate-300 dark:border-slate-600', 'border-emerald-400', 'border-amber-600/60'];
+                if (!row) return <div key={podiumIdx} />;
+                return (
+                  <div key={row._id} className={`flex flex-col items-center gap-3 ${heights[podiumIdx]}`}>
+                    <div className={`relative w-14 h-14 md:w-16 md:h-16 rounded-full border-2 ${rings[podiumIdx]} overflow-hidden bg-slate-100 dark:bg-slate-800 shadow-lg`}>
+                      {row.avatar
+                        ? <img src={row.avatar} className="w-full h-full object-cover" alt="" />
+                        : <span className="w-full h-full flex items-center justify-center font-black text-xl text-slate-500">{row.name?.charAt(0)}</span>
+                      }
+                    </div>
+                    <span className="text-xl">{medals[podiumIdx]}</span>
+                    <div className="text-center">
+                      <p className="text-xs font-black text-slate-900 dark:text-white truncate max-w-[80px] md:max-w-[120px]">{row.name}</p>
+                      <p className="text-[10px] font-black text-emerald-600 dark:text-emerald-400">{row.totalPoints || 0} XP</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-            
-            <div className="p-8 bg-black/5 dark:bg-white/5 flex items-center justify-center">
-               <button className="text-[10px] font-black text-brand uppercase tracking-[0.3em] hover:underline flex items-center gap-2">
-                  View Full Global Index <ArrowRight className="w-4 h-4" />
-               </button>
-            </div>
+          )}
+
+          {/* Ranked List */}
+          <div className="flex flex-col gap-2 animate-on-scroll">
+            {leaderboardLoading ? (
+              Array(6).fill(0).map((_, i) => (
+                <div key={i} className="h-16 rounded-2xl animate-pulse bg-slate-100 dark:bg-slate-900" />
+              ))
+            ) : (leaderboard || []).length === 0 ? (
+              <div className="py-20 text-center">
+                <Zap className="w-10 h-10 text-slate-200 dark:text-slate-800 mx-auto mb-3" />
+                <p className="text-sm font-black text-slate-400 dark:text-slate-600 uppercase tracking-widest">No Rankings Yet</p>
+              </div>
+            ) : (
+              leaderboard.slice(0, 8).map((row, idx) => {
+                const maxPts = leaderboard[0]?.totalPoints || 1;
+                const pct = Math.min(100, Math.round(((row.totalPoints || 0) / maxPts) * 100));
+                const rankColors = ['text-yellow-500', 'text-slate-400', 'text-amber-700', ''];
+                const bgAccents = ['bg-yellow-500/5 dark:bg-yellow-500/5', 'bg-slate-500/5 dark:bg-slate-500/5', 'bg-amber-700/5 dark:bg-amber-700/5', ''];
+                return (
+                  <div
+                    key={row._id}
+                    className={`group flex items-center gap-4 px-5 py-4 rounded-2xl border border-slate-100 dark:border-white/5 ${bgAccents[idx] || 'bg-slate-50 dark:bg-slate-900/60'} hover:border-emerald-500/30 hover:shadow-md hover:shadow-emerald-500/5 transition-all duration-300`}
+                  >
+                    {/* Rank */}
+                    <span className={`w-8 text-center text-sm font-black tabular-nums ${rankColors[idx] || 'text-slate-400 dark:text-slate-600'}`}>
+                      {(idx + 1).toString().padStart(2, '0')}
+                    </span>
+
+                    {/* Avatar */}
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 flex-shrink-0 border border-slate-200 dark:border-white/5">
+                      {row.avatar
+                        ? <img src={row.avatar} className="w-full h-full object-cover" alt="" />
+                        : <span className="w-full h-full flex items-center justify-center font-black text-sm text-slate-500">{row.name?.charAt(0)}</span>
+                      }
+                    </div>
+
+                    {/* Name + meta */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-black text-slate-900 dark:text-white truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{row.name}</p>
+                      <p className="text-[10px] text-slate-400 font-medium truncate">{row.department} · {row.year}</p>
+                    </div>
+
+                    {/* XP + bar */}
+                    <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                      <span className="text-sm font-black text-slate-900 dark:text-white tabular-nums">{row.totalPoints || 0}</span>
+                      <div className="w-20 h-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${pct}%` }} />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Mobile CTA */}
+          <div className="flex md:hidden justify-center mt-10">
+            <Link to="/leaderboard" className="flex items-center gap-2 px-6 py-3 rounded-full border border-emerald-500/30 text-emerald-600 dark:text-emerald-500 text-xs font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all">
+              Full Rankings <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
       </section>
 
       {/* 8. Team Accordion Section */}
-      <section id="team" className="py-16 md:py-32 px-4 sm:px-6 relative z-10">
+      <section id="team" className="py-16 md:py-32 px-4 sm:px-6 relative z-20 bg-slate-50 dark:bg-slate-900 border-t border-black/5 dark:border-white/5">
         <div className="max-w-7xl mx-auto flex flex-col gap-20">
           {/* Header Section */}
           <div className="flex flex-col gap-4 text-center max-w-3xl mx-auto animate-on-scroll">

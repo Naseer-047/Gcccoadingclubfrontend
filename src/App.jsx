@@ -133,7 +133,7 @@ function AppLayout({ theme, toggleTheme, navVisible, mobileMenuOpen, setMobileMe
   }, []);
 
   return (
-    <div className="min-h-screen relative selection:bg-brand selection:text-white overflow-x-hidden bg-white dark:bg-slate-950 font-cyber flex flex-col transition-all duration-500 ease-in-out">
+    <div className="min-h-screen relative selection:bg-brand selection:text-white overflow-x-clip bg-white dark:bg-slate-950 font-cyber flex flex-col transition-all duration-500 ease-in-out">
       {!isAdmin && !isImmersive && (
         <Navbar
           theme={theme}
