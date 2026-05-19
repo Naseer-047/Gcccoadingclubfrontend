@@ -128,7 +128,7 @@ export default function BannerSpotlight({ banners }) {
         >
           <div className="w-full h-auto max-w-7xl mx-auto flex items-center justify-center">
             {/* Main Card Container */}
-            <div className="relative w-full h-[85vh] md:h-[500px] rounded-[2rem] md:rounded-[3rem] overflow-hidden bg-slate-950 border border-white/10 shadow-2xl">
+             <div className="relative w-full h-[85vh] md:h-[500px] rounded-3xl md:rounded-[2rem] overflow-hidden bg-slate-950/40 backdrop-blur-xl border border-white/10 shadow-2xl">
               
               {/* Background Image Layer - GPU Accelerated */}
               <div className="absolute inset-0 z-0">
@@ -138,6 +138,7 @@ export default function BannerSpotlight({ banners }) {
                   className="w-full h-full object-cover opacity-70 md:opacity-60 transform-gpu"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-white/[0.02] dark:bg-black/[0.15] backdrop-blur-[6px] pointer-events-none" />
               </div>
 
               {/* Content Layer */}
@@ -178,7 +179,7 @@ export default function BannerSpotlight({ banners }) {
 
                     {/* Countdown Timer - SECONDS FIXED */}
                     {banner.targetDate && (
-                      <div className="flex items-center justify-center gap-4 md:gap-8 px-4 md:px-8 py-2 md:py-4 bg-black/60 rounded-xl md:rounded-[2rem] border border-white/10">
+                      <div className="flex items-center justify-center gap-4 md:gap-8 px-4 md:px-8 py-2 md:py-4 bg-white/5 dark:bg-black/40 backdrop-blur-md rounded-xl md:rounded-2xl border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)]">
                         <CountdownUnit value={timeLeft.d} label="Days" />
                         <div className="w-px h-5 md:h-10 bg-white/10" />
                         <CountdownUnit value={timeLeft.h} label="Hrs" />

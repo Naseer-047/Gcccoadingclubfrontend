@@ -416,7 +416,7 @@ export default function EventRegistration() {
               </div>
             </div>
 
-            <button type="submit" className="w-full py-6 rounded-[2rem] bg-emerald-500 text-white text-xs font-black uppercase tracking-[0.3em] shadow-2xl shadow-emerald-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4">
+            <button type="submit" className="w-full h-14 md:h-16 rounded-xl md:rounded-2xl bg-emerald-500 text-white text-xs font-black uppercase tracking-[0.3em] shadow-2xl shadow-emerald-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4">
               {event.price > 0 ? (
                 <>Proceed to Payment <ArrowRight className="w-6 h-6" /></>
               ) : (
@@ -429,7 +429,7 @@ export default function EventRegistration() {
             <button 
               onClick={handleAutomatedPay}
               disabled={submitting || isUploading}
-              className="w-full py-5 md:py-6 rounded-2xl md:rounded-[2rem] bg-emerald-500 text-white text-[10px] md:text-xs font-black uppercase tracking-[0.2em] md:tracking-[0.3em] shadow-2xl shadow-emerald-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-3 md:gap-4"
+              className="w-full h-14 md:h-16 rounded-xl md:rounded-2xl bg-emerald-500 text-white text-[10px] md:text-xs font-black uppercase tracking-[0.2em] md:tracking-[0.3em] shadow-2xl shadow-emerald-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-3 md:gap-4"
             >
               {submitting ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -566,7 +566,7 @@ export default function EventRegistration() {
                    href={event.officialGroupLink}
                    target="_blank"
                    rel="noopener noreferrer"
-                   className="w-full py-5 md:py-6 rounded-2xl md:rounded-3xl bg-[#25D366] text-white text-[10px] md:text-xs font-black uppercase tracking-[0.2em] shadow-xl shadow-green-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4"
+                   className="w-full h-14 md:h-16 rounded-xl md:rounded-2xl bg-[#25D366] text-white text-[10px] md:text-xs font-black uppercase tracking-[0.2em] shadow-xl shadow-green-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4"
                  >
                    Join Official {event.title} Group <ExternalLink className="w-5 h-5" />
                  </a>

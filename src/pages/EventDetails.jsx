@@ -266,14 +266,14 @@ export default function EventDetails() {
               {isExpired ? (
                 <button 
                   disabled
-                  className="w-full py-4.5 rounded-xl text-[10px] font-black tracking-[0.2em] flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 uppercase cursor-not-allowed border border-slate-200 dark:border-white/5"
+                  className="w-full h-14 rounded-xl text-[10px] font-black tracking-[0.2em] flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 uppercase cursor-not-allowed border border-slate-200 dark:border-white/5"
                 >
                   REGISTRATION CLOSED
                 </button>
               ) : (
                 <Link 
                   to={`/register/event/${id}`}
-                  className={`w-full py-4.5 rounded-xl text-[10px] font-black tracking-[0.2em] flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-95 uppercase shadow-lg text-center ${
+                  className={`w-full h-14 rounded-xl text-[10px] font-black tracking-[0.2em] flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-95 uppercase shadow-lg text-center ${
                     isRegistered 
                       ? 'bg-emerald-500 text-white shadow-emerald-500/20 border border-emerald-400' 
                       : 'bg-slate-950 text-white hover:bg-emerald-500 dark:bg-white dark:text-slate-900 dark:hover:bg-emerald-500 dark:hover:text-white'

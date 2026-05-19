@@ -463,14 +463,14 @@ export default function Events() {
                         <div className="flex items-center gap-2 mt-1">
                           <Link
                             to={`/event/${item._id}`}
-                            className="flex-1 py-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-center hover:bg-emerald-500 hover:text-white transition-all duration-300 flex items-center justify-center gap-1 active:scale-95"
+                            className="flex-1 py-3 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-center hover:bg-emerald-500 hover:text-white transition-all duration-300 flex items-center justify-center gap-1 active:scale-95"
                           >
                             Details <ArrowRight className="w-3 h-3" />
                           </Link>
                           {!isPast && (
                             <Link
                               to={`/register/event/${item._id}`}
-                              className="flex-1 py-2 rounded-xl bg-emerald-500 text-white text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-center hover:bg-emerald-600 transition-all duration-300 active:scale-95 shadow-sm shadow-emerald-500/10"
+                              className="flex-1 py-3 rounded-xl bg-emerald-500 text-white text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-center hover:bg-emerald-600 transition-all duration-300 active:scale-95 shadow-sm shadow-emerald-500/10"
                             >
                               Register
                             </Link>
@@ -493,7 +493,7 @@ export default function Events() {
       <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
         <button
           onClick={() => setMobileFiltersOpen(true)}
-          className="flex items-center gap-2 px-6 py-4.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-2xl active:scale-95 transition-all border border-white/10 dark:border-slate-200"
+          className="flex items-center gap-2 px-6 h-12 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-[10px] uppercase tracking-widest shadow-2xl active:scale-95 transition-all border border-white/10 dark:border-slate-200"
         >
           <Filter className="w-3.5 h-3.5 text-emerald-500" /> Advanced Filter 
           {activeFiltersCount > 0 && (

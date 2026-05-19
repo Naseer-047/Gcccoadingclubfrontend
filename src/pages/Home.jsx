@@ -615,8 +615,8 @@ export default function Home({ theme }) {
         </div>
       </div>
 
-      <section id="about" className="relative z-20 py-16 md:py-32 px-4 sm:px-6 border-t border-black/5 dark:border-white/5 bg-white dark:bg-slate-950 select-none overflow-x-clip">
-        <div className="absolute inset-0 bg-white/90 dark:bg-slate-950/90 backdrop-blur-[20px] z-0" />
+      <section id="about" className="relative z-20 py-16 md:py-32 px-4 sm:px-6 border-t border-black/5 dark:border-white/5 bg-white/40 dark:bg-slate-950/40 select-none overflow-x-clip">
+        <div className="absolute inset-0 bg-white/40 dark:bg-slate-950/40 backdrop-blur-3xl z-0" />
         
         <div className="max-w-6xl mx-auto grid lg:grid-cols-12 gap-12 md:gap-16 relative z-10">
           <div id="about-left" className="lg:col-span-5">
