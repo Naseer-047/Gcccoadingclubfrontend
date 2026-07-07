@@ -98,131 +98,138 @@ export default function Navbar({ theme, toggleTheme }) {
     { label: 'Domains', id: 'domains' },
   ];
 
+  // Determine active item loosely based on path
+  const isActive = (id) => {
+    if (id === 'home' && location.pathname === '/') return true;
+    if (location.pathname.includes(id)) return true;
+    return false;
+  };
+
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-500 
-      ${scrolled ? 'pt-2' : 'pt-4'} 
+    <nav className={`fixed top-0 left-0 right-0 z-[50] transition-all duration-500 
+      ${scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-200' : 'bg-transparent pt-[2vh]'} 
       ${visible ? 'translate-y-0' : '-translate-y-full'}
-      flex flex-col bg-transparent border-none pointer-events-none`}
+      flex flex-col pointer-events-auto`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 sm:h-20 flex items-center justify-between w-full relative pointer-events-none">
-        {/* Logo & Brand - pure logo, no background */}
-        <Link to="/" className="flex items-center gap-2 group pointer-events-auto">
-          <div className="w-12 h-12 sm:w-11 sm:h-11 flex-shrink-0 relative">
-            <img src={GccLogo} alt="GCC Logo" className="relative w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
+      <div className="max-w-[1700px] w-full mx-auto px-[3vw] h-[8vh] min-h-[60px] max-h-[80px] flex items-center justify-between">
+        
+        {/* Logo & Brand */}
+        <Link to="/" className="flex items-center gap-[0.8vw] group">
+          <div className="w-[3vw] h-[3vw] min-w-[36px] min-h-[36px] flex-shrink-0 relative bg-white rounded-lg flex items-center justify-center p-[0.2vw] shadow-sm border border-slate-100">
+            <img src={GccLogo} alt="GCC Logo" className="w-full h-full object-contain" />
           </div>
-          <span className="text-slate-950 dark:text-white font-black tracking-tighter text-lg leading-none">GCC</span>
+          <div className="hidden sm:flex flex-col">
+            <span className="text-slate-900 font-black tracking-wide text-[clamp(14px,1.2vw,18px)] leading-tight uppercase">GAT Coding Club</span>
+            <span className="text-slate-500 text-[clamp(8px,0.6vw,10px)] font-bold tracking-[0.2em] uppercase leading-tight">Code. Collaborate. Create.</span>
+          </div>
         </Link>
 
-        {/* Center Desktop Navigation - pill shaped blur background */}
-        <div className="hidden md:flex items-center gap-1 px-4 py-3 rounded-full bg-white/20 dark:bg-black/20 backdrop-blur-2xl border border-white/25 dark:border-white/10 shadow-[inset_0_1px_2px_rgba(255,255,255,0.2),0_8px_32px_rgba(0,0,0,0.06)] absolute left-1/2 -translate-x-1/2 pointer-events-auto">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={(e) => handleNavClick(e, item.id)}
-              className="px-3.5 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors relative group"
-            >
-              {item.label}
-              <span className="absolute bottom-0.5 left-3.5 right-3.5 h-0.5 bg-emerald-500 dark:bg-emerald-400 scale-x-0 group-hover:scale-x-100 transition-transform origin-center duration-300" />
-            </button>
-          ))}
+        {/* Center Desktop Navigation */}
+        <div className="hidden lg:flex items-center gap-[2.5vw] absolute left-1/2 -translate-x-1/2">
+          {navItems.map((item) => {
+            const active = isActive(item.id);
+            return (
+              <button
+                key={item.id}
+                onClick={(e) => handleNavClick(e, item.id)}
+                className={`relative flex flex-col items-center justify-center text-[clamp(12px,1vw,16px)] font-bold transition-colors duration-300 ${active ? 'text-slate-900' : 'text-slate-500 hover:text-slate-900'}`}
+              >
+                {item.label}
+                {/* Green Dot for Active State */}
+                <span className={`absolute -bottom-[1vh] w-[0.4vw] h-[0.4vw] min-w-[4px] min-h-[4px] rounded-full bg-[#1da039] transition-all duration-300 ${active ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`} />
+              </button>
+            )
+          })}
         </div>
 
-        {/* Right Actions - without background */}
-        <div className="flex items-center gap-2 sm:gap-3 z-10 pointer-events-auto">
-          {/* Theme Toggle next to Notification & Auth Actions */}
+        {/* Right Actions */}
+        <div className="flex items-center gap-[1.5vw] z-10">
           <button
             onClick={toggleTheme}
-            className="w-9 h-9 rounded-full flex items-center justify-center bg-white/25 dark:bg-white/[0.03] hover:bg-white/45 dark:hover:bg-white/[0.08] transition-colors text-slate-700 dark:text-slate-300 border border-white/30 dark:border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.25)] backdrop-blur-xl"
+            className="text-slate-600 hover:text-slate-900 transition-colors"
           >
-            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            {theme === 'dark' ? <Sun className="w-[1.5vw] h-[1.5vw] min-w-[20px] min-h-[20px]" /> : <Moon className="w-[1.5vw] h-[1.5vw] min-w-[20px] min-h-[20px]" />}
           </button>
 
-          <NotificationCenter />
+          {/* Hardcoded notification for exact match in reference image */}
+          <div className="relative cursor-pointer text-slate-600 hover:text-slate-900 transition-colors">
+            <Bell className="w-[1.5vw] h-[1.5vw] min-w-[20px] min-h-[20px]" />
+            <div className="absolute -top-[0.2vw] -right-[0.2vw] w-[1vw] h-[1vw] min-w-[14px] min-h-[14px] bg-[#1da039] text-white text-[9px] font-bold rounded-full flex items-center justify-center border-2 border-[#fafafa]">3</div>
+          </div>
 
           {user ? (
-            <div id="navbar-user-section" className="hidden md:flex items-center gap-3 pl-3 border-l border-slate-200 dark:border-white/10">
+            <div id="navbar-user-section" className="hidden md:flex items-center gap-[0.5vw] pl-[1vw] border-l border-slate-200">
               <Link 
                 to="/profile" 
-                className="w-9 h-9 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center overflow-hidden border border-slate-200 dark:border-white/10 hover:scale-105 transition-all shadow-sm"
+                className="w-[2.5vw] h-[2.5vw] min-w-[36px] min-h-[36px] rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 hover:border-[#1da039] transition-all"
               >
                 {user.avatar ? (
                   <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                 ) : (
-                  <Users className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                  <Users className="w-[1.2vw] h-[1.2vw] min-w-[18px] min-h-[18px] text-slate-400" />
                 )}
               </Link>
               <button 
                 onClick={handleLogout}
-                className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-red-500/10 text-slate-500 hover:text-red-500 transition-all border border-transparent hover:border-red-500/10"
+                className="w-[2.5vw] h-[2.5vw] min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full hover:bg-red-50 text-slate-400 hover:text-red-500 transition-all border border-transparent hover:border-red-200"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut className="w-[1.2vw] h-[1.2vw] min-w-[18px] min-h-[18px]" />
               </button>
             </div>
           ) : (
             <Link 
               id="navbar-auth-button"
               to="/auth" 
-              className="hidden sm:flex px-5 py-2 rounded-full bg-slate-950 dark:bg-white text-white dark:text-slate-950 text-xs font-semibold hover:bg-slate-900 dark:hover:bg-slate-100 transition-all duration-300 shadow-sm border border-slate-200/10 dark:border-white/10"
+              className="hidden sm:flex items-center gap-[0.5vw] px-[1.5vw] py-[1vh] rounded-full bg-white border border-green-200/60 text-slate-900 text-[clamp(12px,0.9vw,16px)] font-bold hover:border-[#1da039] hover:text-[#1da039] transition-all duration-300 group shadow-[0_2px_10px_rgba(0,0,0,0.02)]"
             >
-              Join Club
+              <Users className="w-[1vw] h-[1vw] min-w-[16px] min-h-[16px] text-[#1da039] transition-colors" /> Join GCC
             </Link>
           )}
 
           {/* Mobile Menu Toggle */}
           <button 
             id="mobile-menu-toggle"
-            data-open={mobileMenuOpen}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-1.5 text-slate-900 dark:text-white"
+            className="lg:hidden p-2 text-slate-900"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-[1.5vw] h-[1.5vw] min-w-[24px] min-h-[24px]" /> : <Menu className="w-[1.5vw] h-[1.5vw] min-w-[24px] min-h-[24px]" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Menu Overlay */}
       <div 
-        className={`md:hidden fixed inset-0 top-16 bg-white z-[9999] transition-all duration-300 ease-in-out
+        className={`lg:hidden fixed inset-0 top-[8vh] min-top-[60px] max-top-[80px] bg-white z-[9999] transition-all duration-300 ease-in-out border-t border-slate-100
         ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
-        style={{ backgroundColor: '#ffffff', opacity: 1 }}
       >
-        <div className="flex flex-col p-6 gap-4 pt-8 bg-white h-[calc(100vh-4rem)] overflow-y-auto custom-scrollbar">
-          <div className="flex flex-col gap-3">
+        <div className="flex flex-col p-[5vw] gap-[3vh] pt-[4vh] h-[calc(100vh-8vh)] overflow-y-auto custom-scrollbar">
+          <div className="flex flex-col gap-[2vh]">
             {user ? (
-              <div className="flex flex-col gap-2">
-                <Link 
-                  id="mobile-profile-link"
-                  to="/profile" 
-                  onClick={() => setMobileMenuOpen(false)} 
-                  className="flex items-center justify-between py-3 px-5 rounded-xl bg-emerald-500 text-white font-black text-sm shadow-lg shadow-emerald-500/20"
-                >
-                  MY PROFILE <Users className="w-4 h-4" />
-                </Link>
-              </div>
+              <Link 
+                to="/profile" 
+                onClick={() => setMobileMenuOpen(false)} 
+                className="flex items-center justify-between py-[2vh] px-[5vw] rounded-2xl bg-[#1da039] text-white font-black text-sm shadow-lg shadow-[#1da039]/20"
+              >
+                MY PROFILE <Users className="w-5 h-5" />
+              </Link>
             ) : (
-              <Link to="/auth" onClick={() => setMobileMenuOpen(false)} className="py-4 px-6 rounded-xl bg-slate-950 text-white font-black text-center text-sm shadow-xl shadow-slate-950/20 flex items-center justify-center gap-3">
-                JOIN GCC CLUB <ArrowRight className="w-4 h-4 text-emerald-500" />
+              <Link to="/auth" onClick={() => setMobileMenuOpen(false)} className="py-[2vh] px-[5vw] rounded-2xl bg-slate-50 border border-green-200 text-[#1da039] font-black text-center text-sm flex items-center justify-center gap-3">
+                JOIN GCC CLUB <Users className="w-5 h-5" />
               </Link>
             )}
           </div>
 
-          <div className="h-px bg-black/5 dark:border-white/5 my-2" />
+          <div className="h-px bg-slate-100 my-[1vh]" />
 
-          <div className="flex flex-col gap-1">
-             <div className="flex items-center justify-between mb-2">
-                <span className="text-[9px] font-black text-slate-400 tracking-[0.3em] uppercase">Navigation</span>
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-black/5 dark:border-white/10 text-slate-900 dark:text-white"
-                >
-                  {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                </button>
+          <div className="flex flex-col gap-[1vh]">
+             <div className="flex items-center justify-between mb-[2vh]">
+                <span className="text-[10px] font-black text-slate-400 tracking-[0.3em] uppercase">Navigation</span>
              </div>
              {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={(e) => handleNavClick(e, item.id)}
-                  className="text-lg font-bold text-slate-950 tracking-tight text-left py-2 bg-white relative z-10 uppercase"
+                  className="text-xl font-bold text-slate-900 tracking-tight text-left py-[1.5vh] relative z-10"
                 >
                   {item.label}
                 </button>
@@ -230,8 +237,8 @@ export default function Navbar({ theme, toggleTheme }) {
           </div>
 
           {user && (
-            <div className="mt-auto pt-6 pb-8">
-              <button onClick={handleLogout} className="w-full py-3 px-5 rounded-xl bg-slate-50 text-red-500 font-black text-xs text-center border border-red-500/10 uppercase tracking-widest">LOGOUT</button>
+            <div className="mt-auto pt-[3vh] pb-[4vh]">
+              <button onClick={handleLogout} className="w-full py-[2vh] px-[5vw] rounded-2xl bg-red-50 text-red-500 font-black text-sm text-center border border-red-100 uppercase tracking-widest">LOGOUT</button>
             </div>
           )}
         </div>
@@ -239,3 +246,5 @@ export default function Navbar({ theme, toggleTheme }) {
     </nav>
   );
 }
+
+

@@ -17,12 +17,13 @@ import RecruitmentBanner from '../assets/banners/gcc-club-recruitment-instagram.
 import WorkshopBanner1 from '../assets/banners/workshop 1.webp';
 import GccLogo from '../assets/logo/gcc logo.png';
 import { 
-  Code, Menu, X, ArrowLeft, ArrowRight, Sun, Moon, Sparkles, Terminal as TerminalIcon, Shield, Layers, Award, Users, ChevronRight, Check, Calendar, Globe, MessageSquare, ArrowBigUp, Monitor, Zap, Video, Mic, Sword, BookOpen, Rocket, Trophy
+  Code, Menu, X, ArrowLeft, ArrowRight, Sun, Moon, Sparkles, Terminal as TerminalIcon, Shield, Layers, Award, Users, ChevronRight, Check, Calendar, Globe, MessageSquare, ArrowBigUp, Monitor, Zap, Video, Mic, Sword, BookOpen, Rocket, Trophy, Database, Brain, Bug, Lock, Network, LineChart, Server, Hexagon, Leaf, Bot, BarChart3, ShieldCheck, FileCode2, FileJson, Braces, FileText, Clock
 } from 'lucide-react';
 import { Github, Instagram, Linkedin } from '../components/Icons';
 import HeroTerminal from '../components/HeroTerminal';
 import BannerSpotlight from '../components/BannerSpotlight';
 import Magnetic from '../components/Magnetic';
+import HeroOS from '../components/HeroOS';
 import socket from '../utils/socket';
 import ThreeGridTunnel from '../components/ThreeGridTunnel';
 import useScrollReveal from '../hooks/useScrollReveal';
@@ -494,6 +495,24 @@ export default function Home({ theme }) {
     };
   }, [loading]);
 
+  const domainColors = {
+    emerald: { bg: 'bg-emerald-50', text: 'text-emerald-500', pillText: 'text-emerald-600', border: 'border-emerald-200', hoverBg: 'hover:bg-emerald-50/30', hoverText: 'group-hover:text-emerald-700', hoverIconBg: 'group-hover:bg-emerald-100' },
+    blue: { bg: 'bg-blue-50', text: 'text-blue-500', pillText: 'text-blue-600', border: 'border-blue-200', hoverBg: 'hover:bg-blue-50/30', hoverText: 'group-hover:text-blue-700', hoverIconBg: 'group-hover:bg-blue-100' },
+    purple: { bg: 'bg-purple-50', text: 'text-purple-500', pillText: 'text-purple-600', border: 'border-purple-200', hoverBg: 'hover:bg-purple-50/30', hoverText: 'group-hover:text-purple-700', hoverIconBg: 'group-hover:bg-purple-100' },
+    orange: { bg: 'bg-orange-50', text: 'text-orange-500', pillText: 'text-orange-600', border: 'border-orange-200', hoverBg: 'hover:bg-orange-50/30', hoverText: 'group-hover:text-orange-700', hoverIconBg: 'group-hover:bg-orange-100' },
+    cyan: { bg: 'bg-cyan-50', text: 'text-cyan-500', pillText: 'text-cyan-600', border: 'border-cyan-200', hoverBg: 'hover:bg-cyan-50/30', hoverText: 'group-hover:text-cyan-700', hoverIconBg: 'group-hover:bg-cyan-100' },
+    red: { bg: 'bg-red-50', text: 'text-red-500', pillText: 'text-red-600', border: 'border-red-200', hoverBg: 'hover:bg-red-50/30', hoverText: 'group-hover:text-red-700', hoverIconBg: 'group-hover:bg-red-100' },
+    amber: { bg: 'bg-amber-50', text: 'text-amber-500', pillText: 'text-amber-600', border: 'border-amber-200', hoverBg: 'hover:bg-amber-50/30', hoverText: 'group-hover:text-amber-700', hoverIconBg: 'group-hover:bg-amber-100' },
+    default: { bg: 'bg-slate-50', text: 'text-slate-500', pillText: 'text-slate-600', border: 'border-slate-200', hoverBg: 'hover:bg-slate-50/30', hoverText: 'group-hover:text-slate-700', hoverIconBg: 'group-hover:bg-slate-100' },
+  };
+
+  const getIconComponent = (iconName) => {
+    const icons = {
+      Code, Sparkles, Terminal: TerminalIcon, Layers, Shield, Globe, Monitor, Database, Brain
+    };
+    return icons[iconName] || Layers;
+  };
+
   return (
     <div className="relative font-sans select-none overflow-x-clip min-h-screen">
       {/* Shared WebGL Background - Mounted exactly once to save GPU memory & avoid lag */}
@@ -556,64 +575,9 @@ export default function Home({ theme }) {
             <BannerSpotlight banners={activeBanners} />
           </div>
         </div>
-      )}      {/* DESKTOP HERO */}
-      <section id="hero" className={`hidden md:flex md:sticky md:top-0 md:z-0 min-h-[100vh] flex-col items-center justify-center pb-6 px-6 overflow-hidden bg-transparent ${(showBanner && activeBanners.length > 0) ? 'pt-24 md:pt-32' : 'pt-32 md:pt-40'}`}>
-        {/* Shutter Doors */}
-        <div id="hero-door-l" className="hero-door hero-door-left"></div>
-        <div id="hero-door-r" className="hero-door hero-door-right"></div>
- 
-        <div id="home-content" className="max-w-6xl mx-auto flex flex-col items-center text-center gap-6 w-full relative z-20">
-          <div className="flex flex-col gap-6 items-center">
-            <h1 id="hero-title" className="text-[5rem] md:text-[7rem] lg:text-[8rem] leading-[0.85] font-black tracking-tighter text-slate-950 dark:text-white mb-2">
-              Learn <span className="text-emerald-500 dark:text-emerald-400">coding.</span>
-            </h1>
-            <p id="hero-subtitle" className="text-lg md:text-xl font-normal max-w-xl leading-relaxed mb-6 text-slate-500 dark:text-slate-400">
-              Build the projects of your dreams to scale your skills and career, <span className="text-emerald-500 dark:text-emerald-400 font-semibold">infinitely</span>
-            </p>
-          </div>
+      )}
+      <HeroOS events={events} domains={domains} rooms={rooms} leaderboard={leaderboard} />
 
-          <div id="hero-actions" className="flex items-center gap-6 mt-2">
-            <Magnetic strength={0.3}>
-              <Link 
-                to="/domains"
-                className="rounded-full px-8 py-3.5 text-sm font-medium transition-all duration-300 bg-emerald-500 text-white hover:bg-emerald-600 shadow-[0_8px_20px_rgba(16,185,129,0.25)] dark:shadow-[0_8px_20px_rgba(16,185,129,0.15)]"
-              >
-                Explore Domains
-              </Link>
-            </Magnetic>
-            
-            <Magnetic strength={0.2}>
-              <button 
-                onClick={() => {
-                  const el = document.getElementById('about');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="text-sm font-medium hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors flex items-center gap-1 text-emerald-600 dark:text-emerald-400"
-              >
-                Our Mission <span>→</span>
-              </button>
-            </Magnetic>
-          </div>
-        </div>
-      </section>
-
-      {/* MOBILE HERO (The Magnet) */}
-      <MobileHero banners={activeBanners} />
-      {/* Stats Overlay for Desktop */}
-      <div className="hidden lg:block pointer-events-none relative">
-        <div className="absolute right-[4vw] bottom-[10dvh] flex flex-col gap-8 items-end text-right z-30">
-           <div className="flex flex-col gap-1.5 group animate-on-scroll items-end text-right">
-             <div className="w-6 h-[2px] bg-emerald-500 mb-1"></div>
-             <span className="text-4xl font-black text-emerald-500 dark:text-emerald-400 leading-none">500+</span>
-             <span className="text-[9px] font-black tracking-[0.2em] text-slate-400 uppercase">Members</span>
-           </div>
-           <div className="flex flex-col gap-1.5 group animate-on-scroll items-end text-right">
-             <div className="w-6 h-[2px] bg-emerald-500 mb-1"></div>
-             <span className="text-4xl font-black text-emerald-500 dark:text-emerald-400 leading-none">15+</span>
-             <span className="text-[9px] font-black tracking-[0.2em] text-slate-400 uppercase">Projects</span>
-           </div>
-        </div>
-      </div>
 
       <section id="about" className="relative z-20 py-16 md:py-32 px-4 sm:px-6 border-t border-black/5 dark:border-white/5 bg-white/40 dark:bg-slate-950/40 select-none overflow-x-clip">
         <div className="absolute inset-0 bg-white/40 dark:bg-slate-950/40 backdrop-blur-3xl z-0" />
@@ -691,207 +655,351 @@ export default function Home({ theme }) {
               </div>
             </div>
         </div>
-      </section>
+            </section>
 
       {/* Domains Section */}
-      <section id="domains" className="relative py-24 md:py-32 overflow-hidden bg-slate-50 dark:bg-slate-900 z-20">
-        {/* Background decoration */}
-        <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:44px_44px] opacity-[0.03] dark:opacity-[0.05]" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-400/5 dark:bg-emerald-500/8 rounded-full blur-[120px] pointer-events-none" />
+      <section id="domains" className="relative py-12 md:py-16 overflow-hidden bg-[#fafafa]/40 backdrop-blur-xl border-t border-white/50 z-20 font-sans min-h-[100vh] flex flex-col justify-center">
+        {/* Background decoration matching the image */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+            {/* Top Left Wavy Lines */}
+            <svg className="absolute top-0 left-0 w-[600px] h-[600px] opacity-30" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M-100 100 C 100 50, 200 200, 400 0" stroke="#10b981" strokeWidth="0.5" />
+              <path d="M-100 120 C 100 70, 200 220, 400 20" stroke="#10b981" strokeWidth="0.5" />
+              <path d="M-100 140 C 100 90, 200 240, 400 40" stroke="#10b981" strokeWidth="0.5" />
+              <path d="M-100 160 C 100 110, 200 260, 400 60" stroke="#10b981" strokeWidth="0.5" />
+              <path d="M-100 180 C 100 130, 200 280, 400 80" stroke="#10b981" strokeWidth="0.5" />
+              <path d="M-100 200 C 100 150, 200 300, 400 100" stroke="#10b981" strokeWidth="0.5" />
+            </svg>
+            
+            {/* Right Green Glow */}
+            <div className="absolute right-[-10%] top-[20%] w-[800px] h-[800px] bg-emerald-400/10 blur-[150px] rounded-full" />
+            
+            {/* Top Right Grid/Dot Pattern */}
+            <div className="absolute right-[5%] top-[10%] w-[250px] h-[250px] bg-[radial-gradient(#10b981_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-[0.15]" />
+        </div>
 
-        <div className="max-w-7xl mx-auto px-6">
-          {/* Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-14 animate-on-scroll">
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-[2px] bg-emerald-500" />
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600 dark:text-emerald-500">The Ecosystem</span>
-              </div>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.88] text-slate-900 dark:text-white">
-                Specialized<br />
-                <span className="text-emerald-500">Domains.</span>
-              </h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm leading-relaxed font-medium">
-                Elite divisions with dedicated tools, mentorship, and high-impact projects.
-              </p>
+        <div className="w-full max-w-[1700px] mx-auto px-6 md:px-10 relative z-10 flex flex-col items-center">
+          {/* Header */}
+          <div className="flex flex-col items-center text-center gap-4 mb-10 animate-on-scroll">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold tracking-widest uppercase">
+              <Code className="w-4 h-4" strokeWidth={2.5} /> SPECIALIZED DOMAINS
             </div>
-            <Link to="/domains" className="group hidden md:flex items-center gap-2 self-end px-6 py-3 rounded-full border border-emerald-500/30 text-emerald-600 dark:text-emerald-500 text-xs font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all duration-300">
-              All Domains <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+            <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
+              Explore. Learn. <span className="text-emerald-500">Master.</span>
+            </h2>
+            <p className="text-base md:text-lg text-slate-500 max-w-2xl font-medium leading-relaxed">
+              Choose your path and grow with expert mentorship,<br className="hidden sm:block"/> real-world projects, and a community that builds together.
+            </p>
+          </div>
+          {/* Grid of Cards */}
+          <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 pb-8 md:grid md:grid-cols-2 xl:grid-cols-3 md:gap-6 md:overflow-visible md:snap-none md:pb-0 w-[100vw] md:w-full -ml-6 px-6 md:ml-0 md:px-0">
+            {domains.length === 0 ? (
+              <div className="col-span-full py-12 text-center text-slate-500 font-medium">No domains available. Create one in the Admin Panel!</div>
+            ) : (
+              domains.map((domain, idx) => {
+                const color = domainColors[domain.color] || domainColors.default;
+                const IconCmp = getIconComponent(domain.icon);
+                
+                return (
+                  <div key={domain._id || idx} className="shrink-0 snap-center w-[85vw] md:w-auto flex flex-col bg-white/95 md:bg-white/80 backdrop-blur-none md:backdrop-blur-xl rounded-[2rem] p-6 lg:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:-translate-y-2 transition-transform duration-300 animate-on-scroll border border-white/60" style={{ transitionDelay: `${(idx % 4) * 100}ms` }}>
+                     <div className="flex justify-between items-start">
+                       <div className={`w-14 h-14 rounded-2xl ${color.bg} flex items-center justify-center ${color.text}`}>
+                         <IconCmp className="w-7 h-7" strokeWidth={1.5} />
+                       </div>
+                       <div className={`px-3 py-1 ${color.bg} ${color.pillText} text-[9px] font-extrabold rounded-full tracking-wider mt-1`}>
+                         DOMAIN
+                       </div>
+                     </div>
+                     
+                     <h3 className="text-xl font-extrabold text-slate-900 mt-5 mb-1.5 leading-tight tracking-tight uppercase line-clamp-2">{domain.title}</h3>
+                     <p className="text-xs text-slate-500 mb-5 font-medium leading-relaxed line-clamp-3 min-h-[48px]">
+                       {domain.desc || 'Explore and master this specialized technical domain.'}
+                     </p>
+
+                     {/* Stats Row */}
+                     <div className="flex justify-between items-center pt-4 border-t border-slate-100 mb-6 mt-auto">
+                       <div className="flex items-start gap-1.5">
+                         <Users className={`w-4 h-4 ${color.text} mt-0.5`} strokeWidth={2}/>
+                         <div className="flex flex-col">
+                           <span className="text-[13px] font-extrabold text-slate-900 leading-none mb-1">{domain.members?.length || domain.membersCount || 0}</span>
+                           <span className="text-[10px] text-slate-400 font-semibold leading-none">Members</span>
+                         </div>
+                       </div>
+                       <div className="flex items-start gap-1.5">
+                         <Layers className={`w-4 h-4 ${color.text} mt-0.5`} strokeWidth={2}/>
+                         <div className="flex flex-col">
+                           <span className="text-[13px] font-extrabold text-slate-900 leading-none mb-1">{domain.projects?.length || domain.projectsCount || 0}</span>
+                           <span className="text-[10px] text-slate-400 font-semibold leading-none">Projects</span>
+                         </div>
+                       </div>
+                       <div className="flex items-start gap-1.5">
+                         <Calendar className={`w-4 h-4 ${color.text} mt-0.5`} strokeWidth={2}/>
+                         <div className="flex flex-col">
+                           <span className="text-[13px] font-extrabold text-slate-900 leading-none mb-1">Weekly</span>
+                           <span className="text-[10px] text-slate-400 font-semibold leading-none">Sessions</span>
+                         </div>
+                       </div>
+                     </div>
+
+                     <Link to={`/domains/${domain.slug}`} className={`mt-auto relative w-full h-10 rounded-full border border-slate-200 bg-white hover:${color.border} ${color.hoverBg} transition-all flex items-center justify-center group`}>
+                       <span className={`text-[11px] font-bold text-slate-900 ${color.hoverText} transition-colors`}>Explore Domain</span>
+                       <div className={`absolute right-1.5 w-7 h-7 rounded-full ${color.bg} flex items-center justify-center ${color.hoverIconBg} transition-colors`}>
+                         <ArrowRight className={`w-3.5 h-3.5 ${color.text} group-hover:translate-x-0.5 transition-transform`} />
+                       </div>
+                     </Link>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Mobile Carousel Indicators & CTA */}
+          <div className="flex md:hidden flex-col items-center gap-6 mt-8 w-full animate-on-scroll">
+            <div className="flex items-center gap-2">
+              {domains.length > 0 ? domains.map((_, i) => (
+                <div key={i} className={`h-1.5 rounded-full ${i === 0 ? 'w-6 bg-emerald-500' : 'w-1.5 bg-slate-300'}`}></div>
+              )) : (
+                <div className="w-6 h-1.5 rounded-full bg-emerald-500"></div>
+              )}
+            </div>
+            <Link to="/domains" className="flex items-center gap-2 px-8 py-3.5 rounded-full bg-slate-900 text-white text-xs font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all shadow-xl shadow-slate-200/50">
+              View All Domains <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          {/* Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {domainsLoading ? Array(4).fill(0).map((_, i) => (
-              <div key={i} className="h-72 rounded-2xl animate-pulse bg-slate-200 dark:bg-slate-800" />
-            )) : domains.length === 0 ? (
-              <div className="col-span-full py-16 text-center">
-                <Zap className="w-8 h-8 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
-                <p className="text-sm font-black text-slate-400 dark:text-slate-600 uppercase tracking-widest">No domains yet</p>
-              </div>
-            ) : domains.slice(0, 4).map((domain, idx) => (
-              <div key={domain._id} className="group relative flex flex-col bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-white/8 rounded-2xl p-6 hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/8 transition-all duration-400 animate-on-scroll" style={{ transitionDelay: `${idx * 70}ms` }}>
-                {/* Index */}
-                <span className="absolute top-4 right-5 text-[10px] font-black text-slate-300 dark:text-slate-700 tabular-nums">{String(idx + 1).padStart(2, '0')}</span>
-
-                {/* Icon */}
-                <div className="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-500 mb-5 group-hover:scale-110 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-500/20 transition-all duration-300">
-                  {IconMap[domain.icon] || <Layers className="w-5 h-5" />}
-                </div>
-
-                {/* Status dot */}
-                <div className="flex items-center gap-1.5 mb-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-[9px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-widest">Active</span>
-                </div>
-
-                {/* Title & desc */}
-                <h3 className="text-base font-black text-slate-900 dark:text-white leading-tight mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{domain.title}</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3 flex-1">{domain.desc}</p>
-
-                {/* Buttons */}
-                <div className="flex gap-2 mt-5 pt-4 border-t border-slate-100 dark:border-white/5">
-                  <Link to={`/register/domain/${domain._id}`} className="flex-1 py-2 rounded-lg bg-emerald-500 text-white text-[9px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-colors text-center">Join</Link>
-                  <Link to={`/domain/${domain.slug}`} className="flex-1 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[9px] font-black uppercase tracking-widest hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors text-center">Details</Link>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Mobile CTA */}
-          <div className="flex md:hidden justify-center mt-10">
-            <Link to="/domains" className="flex items-center gap-2 px-6 py-3 rounded-full border border-emerald-500/30 text-emerald-600 dark:text-emerald-500 text-xs font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all">
-              All Domains <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
         </div>
       </section>
 
       {/* Events Section */}
-      <section id="events" className="relative py-24 md:py-32 bg-white dark:bg-slate-950 overflow-hidden z-20">
-        {/* Ambient glow */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-emerald-500/5 blur-[100px] rounded-full pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto px-6">
-
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 animate-on-scroll">
-            <div className="flex flex-col gap-5">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-[2px] bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
-                <span className="text-[10px] font-black uppercase tracking-[0.35em] text-emerald-500">Activity Log</span>
-              </div>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-slate-900 dark:text-white leading-[0.88]">
-                Latest<br />
-                <span className="text-emerald-500">Activities.</span>
-              </h2>
-              <p className="text-sm font-medium text-slate-500 dark:text-slate-400 max-w-md leading-relaxed">
-                From hackathons to workshops and elite recruitment drives.
-              </p>
-            </div>
-            <Link
-              to="/events"
-              className="group hidden md:flex items-center gap-3 self-end px-7 py-3.5 rounded-full border border-emerald-500/30 text-emerald-600 dark:text-emerald-500 text-xs font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all duration-300"
-            >
-              Full Archive <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-
-          {/* Event Cards */}
-          <div className="flex flex-col gap-5">
-            {eventsLoading ? (
-              Array(4).fill(0).map((_, i) => (
-                <div key={i} className="h-[140px] rounded-2xl animate-pulse bg-slate-200 dark:bg-slate-800" />
-              ))
-            ) : events.length === 0 ? (
-              <div className="py-24 text-center">
-                <Zap className="w-10 h-10 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
-                <h3 className="text-lg font-black text-slate-400 dark:text-slate-600 uppercase tracking-widest">No Active Transmissions</h3>
-              </div>
-            ) : (
-              events.filter(ev => ev.isActive !== false).slice(0, 4).map((item, idx) => (
-                <div
-                  key={item._id}
-                  className="group relative flex flex-col md:flex-row items-stretch rounded-2xl overflow-hidden border border-slate-200 dark:border-white/5 hover:border-emerald-500/40 bg-white dark:bg-slate-900 transition-all duration-400 hover:shadow-lg hover:shadow-emerald-500/8 animate-on-scroll"
-                  style={{ transitionDelay: `${idx * 60}ms` }}
-                >
-                  {/* Image panel */}
-                  <div className="relative md:w-64 lg:w-80 h-48 md:h-auto flex-shrink-0 overflow-hidden">
-                    <img
-                      src={item.image || 'https://via.placeholder.com/600x400'}
-                      alt={item.title}
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-60 group-hover:opacity-90"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-white/60 dark:from-slate-900/0 dark:to-slate-900/60 md:block hidden" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-white/80 dark:from-slate-900/80 to-transparent md:hidden" />
-                    <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-emerald-500 text-white text-[9px] font-black uppercase tracking-widest shadow-lg">
-                      {item.type || item.category || 'Event'}
-                    </span>
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 flex flex-col md:flex-row items-stretch justify-between gap-6 p-6 md:p-8">
-                    <div className="flex flex-col justify-between gap-4 flex-1">
-                      <div className="flex flex-col gap-2">
-                        <h3 className="text-lg md:text-xl font-black text-slate-900 dark:text-white tracking-tight leading-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-300">
-                          {item.title}
-                        </h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-500 leading-relaxed line-clamp-2">
-                          {item.description || 'An elite technical gathering hosted by GAT Coding Club.'}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-600">
-                        <span className="flex items-center gap-1.5">
-                          <Calendar className="w-3.5 h-3.5 text-emerald-500" />
-                          {new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                        </span>
-                        {item.venue && (
-                          <span className="flex items-center gap-1.5">
-                            <Globe className="w-3.5 h-3.5 text-emerald-500" />
-                            {item.venue}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex md:flex-col items-center justify-start md:justify-center gap-3 flex-shrink-0">
-                      <Link
-                        to={`/register/event/${item._id}`}
-                        className="px-5 py-2.5 rounded-full bg-emerald-500 text-white text-[9px] font-black uppercase tracking-widest hover:bg-emerald-600 active:scale-95 transition-all text-center whitespace-nowrap"
-                      >
-                        Register
-                      </Link>
-                      <Link
-                        to={`/event/${item._id}`}
-                        className="px-5 py-2.5 rounded-full border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 text-[9px] font-black uppercase tracking-widest hover:border-emerald-500/40 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all text-center whitespace-nowrap"
-                      >
-                        Details
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* Index */}
-                  <div className="absolute bottom-4 right-6 text-[10px] font-black text-slate-400 dark:text-slate-700 tabular-nums tracking-widest group-hover:text-emerald-500/40 transition-colors">
-                    {String(idx + 1).padStart(2, '0')}
-                  </div>
+      {(() => {
+        const eventStyles = [
+          {
+            type: "FEATURED",
+            bgClass: "bg-[#050c05]",
+            graphicBg: "bg-[radial-gradient(ellipse_at_center,rgba(34,197,94,0.15)_0%,transparent_70%)]",
+            graphicIcon: <Code className="absolute top-10 left-1/2 -translate-x-1/2 w-48 h-48 text-emerald-500/20" strokeWidth={0.5} />,
+            pillClass: "bg-[#4d7c0f] text-white",
+            titleClass: "text-white",
+            iconClass: "text-[#84cc16]",
+            action: (item) => (
+              <Link to={`/register/event/${item._id}`} className="mt-auto w-full h-10 rounded-full bg-gradient-to-r from-[#65a30d] to-[#4d7c0f] flex items-center justify-between px-5 hover:brightness-110 transition-all">
+                <span className="text-[10px] font-extrabold text-white uppercase tracking-wider">Register Now</span>
+                <ArrowRight className="w-3.5 h-3.5 text-white" />
+              </Link>
+            )
+          },
+          {
+            type: "BOOTCAMP",
+            bgClass: "bg-[#090514]",
+            graphicBg: "bg-[radial-gradient(ellipse_at_center,rgba(147,51,234,0.15)_0%,transparent_70%)]",
+            graphicIcon: <Monitor className="absolute top-10 left-1/2 -translate-x-1/2 w-48 h-48 text-purple-500/20" strokeWidth={0.5} />,
+            pillClass: "bg-purple-900/40 text-purple-400 border border-purple-500/30",
+            titleClass: "text-white",
+            iconClass: "text-purple-400",
+            action: (item) => (
+              <Link to={`/register/event/${item._id}`} className="mt-auto w-full flex items-center justify-between group">
+                <span className="text-[10px] font-extrabold text-purple-400 group-hover:text-purple-300 transition-colors uppercase tracking-wider">Join Now</span>
+                <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center group-hover:bg-indigo-500 transition-colors">
+                  <ArrowRight className="w-3.5 h-3.5 text-white" />
                 </div>
-              ))
-            )}
-          </div>
+              </Link>
+            )
+          },
+          {
+            type: "COMPETITION",
+            bgClass: "bg-[#020617]",
+            graphicBg: "bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.15)_0%,transparent_70%)]",
+            graphicIcon: <Trophy className="absolute top-10 left-1/2 -translate-x-1/2 w-48 h-48 text-blue-500/20" strokeWidth={0.5} />,
+            pillClass: "bg-blue-900/40 text-blue-400 border border-blue-500/30",
+            titleClass: "text-white",
+            iconClass: "text-blue-400",
+            action: (item) => (
+              <Link to={`/register/event/${item._id}`} className="mt-auto w-full flex items-center justify-between group">
+                <span className="text-[10px] font-extrabold text-blue-400 group-hover:text-blue-300 transition-colors uppercase tracking-wider">Participate</span>
+                <div className="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center group-hover:bg-blue-500 transition-colors">
+                  <ArrowRight className="w-3.5 h-3.5 text-white" />
+                </div>
+              </Link>
+            )
+          },
+          {
+            type: "WORKSHOP",
+            bgClass: "bg-[#021815]",
+            graphicBg: "bg-[radial-gradient(ellipse_at_center,rgba(20,184,166,0.15)_0%,transparent_70%)]",
+            graphicIcon: <Brain className="absolute top-10 left-1/2 -translate-x-1/2 w-48 h-48 text-teal-500/20" strokeWidth={0.5} />,
+            pillClass: "bg-teal-900/40 text-teal-400 border border-teal-500/30",
+            titleClass: "text-white",
+            iconClass: "text-teal-400",
+            action: (item) => (
+              <Link to={`/register/event/${item._id}`} className="mt-auto w-full flex items-center justify-between group">
+                <span className="text-[10px] font-extrabold text-teal-400 group-hover:text-teal-300 transition-colors uppercase tracking-wider">Register Now</span>
+                <div className="w-9 h-9 rounded-full bg-teal-600 flex items-center justify-center group-hover:bg-teal-500 transition-colors">
+                  <ArrowRight className="w-3.5 h-3.5 text-white" />
+                </div>
+              </Link>
+            )
+          }
+        ];
+        
+        return (
+          <section id="events" className="relative py-24 bg-[#fafafa] z-20 overflow-hidden font-sans border-t border-slate-100">
+            <div className="w-full max-w-[1700px] mx-auto px-6 md:px-10 flex flex-col xl:flex-row gap-16">
+              
+              {/* Left Content */}
+              <div className="w-full xl:w-[35%] shrink-0 flex flex-col justify-center animate-on-scroll">
+                 {/* Pill */}
+                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-emerald-50 text-emerald-600 text-[10px] font-black tracking-widest uppercase mb-6 self-start">
+                   <Calendar className="w-3.5 h-3.5" strokeWidth={2.5} /> EVENTS
+                 </div>
+                 
+                 {/* Headline */}
+                 <h2 className="text-5xl md:text-6xl font-black tracking-tighter text-slate-900 leading-[1.1] mb-8">
+                   Explore.<br/>
+                   Learn. Compete.<br/>
+                   <span className="text-emerald-500">Grow.</span>
+                 </h2>
+                 
+                 {/* Divider */}
+                 <div className="w-12 h-[3px] bg-emerald-500 mb-12"></div>
+                 
+                 {/* Stats Grid */}
+                 <div className="grid grid-cols-4 gap-4 mb-12">
+                   <div className="flex flex-col items-center gap-2">
+                     <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-emerald-500 border border-slate-100 shadow-sm">
+                       <Calendar className="w-5 h-5" />
+                     </div>
+                     <span className="text-sm font-black text-slate-900 mt-1">40+</span>
+                     <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Events</span>
+                   </div>
+                   <div className="flex flex-col items-center gap-2">
+                     <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-emerald-500 border border-slate-100 shadow-sm">
+                       <Users className="w-5 h-5" />
+                     </div>
+                     <span className="text-sm font-black text-slate-900 mt-1">700+</span>
+                     <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Participants</span>
+                   </div>
+                   <div className="flex flex-col items-center gap-2">
+                     <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-emerald-500 border border-slate-100 shadow-sm">
+                       <Trophy className="w-5 h-5" />
+                     </div>
+                     <span className="text-sm font-black text-slate-900 mt-1">15+</span>
+                     <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Hackathons</span>
+                   </div>
+                   <div className="flex flex-col items-center gap-2">
+                     <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-emerald-500 border border-slate-100 shadow-sm">
+                       <FileText className="w-5 h-5" />
+                     </div>
+                     <span className="text-sm font-black text-slate-900 mt-1">120+</span>
+                     <span className="text-[9px] font-semibold text-slate-500 uppercase tracking-wider">Certificates</span>
+                   </div>
+                 </div>
 
-          {/* Mobile view all */}
-          <div className="flex md:hidden justify-center mt-10">
-            <Link
-              to="/events"
-              className="flex items-center gap-2 px-7 py-3 rounded-full border border-emerald-500/30 text-emerald-600 dark:text-emerald-500 text-xs font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all duration-300"
-            >
-              Full Archive <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
+                 {/* Filters */}
+                 <div className="flex flex-wrap gap-2 mb-12">
+                   <button className="px-5 py-2.5 rounded-full bg-[#1da039] text-white text-[10px] font-extrabold tracking-wide">All Events</button>
+                   <button className="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 text-[10px] font-extrabold tracking-wide transition-colors">Hackathons</button>
+                   <button className="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 text-[10px] font-extrabold tracking-wide transition-colors">Workshops</button>
+                   <button className="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 text-[10px] font-extrabold tracking-wide transition-colors">Competitions</button>
+                   <button className="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 text-[10px] font-extrabold tracking-wide transition-colors">Bootcamps</button>
+                   <button className="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 text-[10px] font-extrabold tracking-wide transition-colors">Talks</button>
+                 </div>
 
-        </div>
-      </section>
+                 {/* Bottom Link */}
+                 <div className="flex items-center gap-6">
+                   <Link to="/events" className="flex items-center gap-4 pl-6 pr-1.5 py-1.5 rounded-full bg-white border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_15px_rgba(0,0,0,0.08)] transition-all group">
+                     <span className="text-[11px] font-extrabold text-slate-800">View All Events</span>
+                     <div className="w-10 h-10 rounded-full bg-[#1da039] flex items-center justify-center">
+                       <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
+                     </div>
+                   </Link>
+                   <span className="text-[10px] text-slate-500 font-semibold tracking-wide">See all upcoming events</span>
+                 </div>
+              </div>
+              
+              {/* Right Carousel */}
+              <div className="w-full xl:w-[65%] relative flex items-center group/carousel">
+                {/* Left Nav Button */}
+                <button className="hidden xl:flex absolute -left-6 z-20 w-12 h-12 rounded-full bg-white shadow-xl border border-slate-100 items-center justify-center text-slate-800 hover:scale-110 transition-transform">
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
+                
+                {/* Carousel Track */}
+                <div className="w-full flex gap-5 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-6 pt-4 px-2">
+                  {eventsLoading ? (
+                    Array(4).fill(0).map((_, i) => (
+                      <div key={i} className="w-[300px] h-[520px] shrink-0 bg-slate-200 rounded-[2rem] animate-pulse" />
+                    ))
+                  ) : events.length === 0 ? (
+                    <div className="w-full flex justify-center py-24 text-center">
+                      <Zap className="w-10 h-10 text-slate-300 dark:text-slate-700 mx-auto mb-4" />
+                      <h3 className="text-lg font-black text-slate-400 dark:text-slate-600 uppercase tracking-widest">No Active Events</h3>
+                    </div>
+                  ) : (
+                    events.filter(ev => ev.isActive !== false).slice(0, 4).map((item, idx) => {
+                      const style = eventStyles[idx % eventStyles.length];
+                      return (
+                        <div key={item._id} className={`relative shrink-0 snap-center w-[300px] h-[520px] rounded-[1.75rem] overflow-hidden flex flex-col p-6 ${style.bgClass} shadow-xl hover:-translate-y-2 transition-transform duration-300`}>
+                           {/* Background abstract graphic */}
+                           <div className="absolute top-0 left-0 right-0 h-[60%] overflow-hidden pointer-events-none">
+                             <div className={`absolute inset-0 ${style.graphicBg}`}></div>
+                             {style.graphicIcon}
+                             {/* Bottom fade */}
+                             <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#000000] to-transparent opacity-80"></div>
+                           </div>
+                           
+                           <div className="relative z-10 flex flex-col h-full">
+                             {/* Pill */}
+                             <div className="flex justify-start mb-auto">
+                               <span className={`px-2.5 py-1 font-black uppercase tracking-widest rounded-sm ${style.pillClass}`}>
+                                 {style.type}
+                               </span>
+                             </div>
+                             
+                             {/* Content */}
+                             <div className="mt-auto flex flex-col gap-1 mb-6 pt-24">
+                               <h3 className={`text-[1.4rem] font-black leading-[1.1] uppercase tracking-tight ${style.titleClass}`}>
+                                 {item.title}
+                               </h3>
+                               <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest leading-relaxed mt-2 line-clamp-2">
+                                 {item.description || "BUILD THE FUTURE OF DECENTRALIZED WEB"}
+                               </p>
+                             </div>
+                             
+                             {/* Meta */}
+                             <div className="flex flex-col gap-3 mb-8">
+                               <div className="flex items-center gap-3 text-[10px] font-extrabold text-slate-300 uppercase tracking-widest">
+                                 <Calendar className={`w-3.5 h-3.5 ${style.iconClass}`} />
+                                 <span>{new Date(item.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                               </div>
+                               <div className="flex items-center gap-3 text-[10px] font-extrabold text-slate-300 uppercase tracking-widest">
+                                 <Clock className={`w-3.5 h-3.5 ${style.iconClass}`} />
+                                 <span>{item.time || '10:00 AM'}</span>
+                               </div>
+                               <div className="flex items-center gap-3 text-[10px] font-extrabold text-slate-300 uppercase tracking-widest">
+                                 <Users className={`w-3.5 h-3.5 ${style.iconClass}`} />
+                                 <span>{item.venue || 'OPEN TO ALL'}</span>
+                               </div>
+                             </div>
+                             
+                             {/* Action */}
+                             {style.action(item)}
+                           </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+
+                {/* Right Nav Button */}
+                <button className="hidden xl:flex absolute -right-6 z-20 w-12 h-12 rounded-full bg-white shadow-xl border border-slate-100 items-center justify-center text-slate-800 hover:scale-110 transition-transform">
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </div>
+
+            </div>
+          </section>
+        );
+      })()}
 
       {/* Coding Hub / Live Rooms Teaser */}
       <section id="live-rooms-preview" className="relative py-24 md:py-32 overflow-hidden bg-slate-50 dark:bg-slate-900 z-20">
@@ -1004,7 +1112,6 @@ export default function Home({ theme }) {
           </div>
         </div>
       </section>
-
       <QuizSection />
 
       {/* Leaderboard Section */}
