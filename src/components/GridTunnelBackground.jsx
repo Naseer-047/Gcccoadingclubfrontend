@@ -32,11 +32,11 @@ export default function GridTunnelBackground() {
   const containerRef = useRef(null);
   const [isDark, setIsDark] = useState(true);
 
-  // Tracks mouse position relative to center of the viewport
+  
   const mouseRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
 
   useEffect(() => {
-    // Detect dark mode
+    
     const checkTheme = () => {
       const dark = document.documentElement.classList.contains('dark');
       setIsDark(dark);

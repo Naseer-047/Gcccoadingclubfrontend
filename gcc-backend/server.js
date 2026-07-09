@@ -30,7 +30,8 @@ const allowedOrigins = [
   'http://10.43.253.148:5173',
   'https://gatcodingclubtech-source.github.io',
   'https://naseer-047.github.io',
-  'https://gcc-coding-club.onrender.com'
+  'https://gcc-coding-club.onrender.com',
+  'https://gcccoadingclubfrontend.vercel.app'
 ];
 
 app.use(

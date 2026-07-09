@@ -49,7 +49,7 @@ export default function AIMentor() {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="absolute bottom-20 right-0 w-[calc(100vw-2rem)] sm:w-[350px] md:w-[400px] h-[500px] md:h-[550px] bg-white dark:bg-slate-950 rounded-[2.5rem] border border-black/5 dark:border-white/10 shadow-2xl flex flex-col overflow-hidden backdrop-blur-3xl"
           >
-            {/* Header */}
+      
             <div className="p-6 bg-emerald-500 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md">
@@ -65,7 +65,7 @@ export default function AIMentor() {
               </button>
             </div>
 
-            {/* Chat Area */}
+           
             <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 flex flex-col gap-4 custom-scrollbar">
               {messages.map((msg, i) => (
                 <motion.div
@@ -94,7 +94,7 @@ export default function AIMentor() {
               )}
             </div>
 
-            {/* Input */}
+           
             <div className="p-6 bg-slate-50 dark:bg-black/20 border-t border-black/5 dark:border-white/5">
               <div className="relative">
                 <input 

@@ -10,7 +10,7 @@ export default function CustomCursor() {
     const follower = followerRef.current;
 
     const moveCursor = (e) => {
-      // Small main dot follows cursor instantly
+     
       gsap.to(cursor, {
         x: e.clientX,
         y: e.clientY,
@@ -18,7 +18,7 @@ export default function CustomCursor() {
         ease: 'power2.out'
       });
 
-      // Larger glowing follower with lag
+      
       gsap.to(follower, {
         x: e.clientX,
         y: e.clientY,
